@@ -51,7 +51,7 @@ private:
     vector<Pole *>	DenominatorsRing;	// Кольцо деноминаторов
     vector<Pole *>  OrderedPolesRing;	// Упорядоченное кольцо полюсов
 
-    vector<Forecast*> ForecastVector;
+    vector<Forecast*> ForecastVector;   // Куммулятивный прогноз по диагонали
 
 
     void 		RecalculationOfMainPool		(int, int, AgentsArray *, int);				// Пересчет основного пула треугольной матрицы

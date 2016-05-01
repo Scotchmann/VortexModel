@@ -59,7 +59,7 @@ double Vortex::pushAgent(double value)
     ///--
     ///--Добавляем горизонтальную струну
     ///--
-    _Agents.push_back(vector<Agent>(int_ArraySize));
+    _Agents.push_back(vector<Agent>((unsigned long)int_ArraySize));
 
     ///--
     ///--Определяем текущий размер массива
@@ -662,8 +662,8 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
             double d_max = max(prev_value, PolesRing[i]->d_value);	// максимальное значение
             double d_min = min(prev_value, PolesRing[i]->d_value);	// минимальное значение
             double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
+                                                                    // и минимальным значением относительно максимального
 
-            // и минимальным значением относительно максимального
             if(bias < int_Step)
             {
                 ///--
@@ -1102,6 +1102,8 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
 
     return Answer;
 }
+
+
 ///--
 ///--Возвращает прогноз по полюсу
 ///--
@@ -1124,6 +1126,8 @@ Forecast * Vortex::ProcessPole(Pole * _pole, double value)
         answer->value		= _pole->Connections[0]->ptr_target_Pole->d_value;
         answer->reliability	= _pole->Connections[0]->d_reliability;
     }
+
+
     ///--
     ///--Если у полюса нет связей возвращаем прогноз с нулями
     ///--
