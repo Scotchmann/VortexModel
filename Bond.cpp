@@ -63,5 +63,12 @@ double Bond::GetReliability() const
     return d_reliability;
 }
 
+Pole * Bond::GetTargetPole()
+{
+    return ptr_target_Pole;
+}
+
+
+
 
 

@@ -46,6 +46,6 @@ private:
         }
     } BondComparatorObject;
 
-    double 			d_value;    //Значение
+    double  d_value;    //Значение
 };
 

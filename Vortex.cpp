@@ -692,7 +692,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                     ///--Если указатели соотвествуют
                     ///--то укрепляем связь
                     ///--
-                    if (ptr_SourcePole->Connections[j]->ptr_target_Pole == ptr_TargetPole)
+                    if (ptr_SourcePole->Connections[j]->GetTargetPole() == ptr_TargetPole)
                     {
                         IsBondFound = true;								// взводим флаг, так как связь найдена
                         ptr_SourcePole->Connections[j]->Strengthen(); 	// укрепляем связь
@@ -1067,7 +1067,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                     ///--Если указатели соотвествуют
                     ///--то укрепляем связь
                     ///--
-                    if (ptr_SourcePole->Connections[j]->ptr_target_Pole == ptr_TargetPole)
+                    if (ptr_SourcePole->Connections[j]->GetTargetPole() == ptr_TargetPole)
                     {
                         IsBondFound = true;								// взводим флаг, так как связь найдена
                         ptr_SourcePole->Connections[j]->Strengthen(); 	// укрепляем связь
@@ -1123,7 +1123,7 @@ Forecast * Vortex::ProcessPole(Pole * _pole, double value)
     ///--
     if (_pole->Connections.size() > 0)
     {
-        answer->value		= _pole->Connections[0]->ptr_target_Pole->GetValue();
+        answer->value		= _pole->Connections[0]->GetTargetPole()->GetValue();
         answer->reliability	= _pole->Connections[0]->GetReliability();
     }
 
