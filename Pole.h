@@ -24,13 +24,14 @@ public:
     ///--Публичные поля
     ///--
     vector<Bond*> 	Connections;
-    double 			d_value;
+
 
     ///--
     ///--Публичные методы
     ///--
     bool SortSourceConnections	();
     bool EaseAllBonds			();
+    double GetValue             () const;
 
 private:
 
@@ -41,8 +42,10 @@ private:
     {
         bool operator() (const Bond * left, const Bond * right)
         {
-            return (left->d_reliability > right->d_reliability);
+            return (left->GetReliability() > right->GetReliability());
         }
     } BondComparatorObject;
+
+    double 			d_value;    //Значение
 };
 

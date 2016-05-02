@@ -26,7 +26,7 @@ Pole::~Pole()
     for (auto it = Connections.begin(); it != Connections.end(); ++it)
     {
         delete *it;
-        Connections.erase(it);	// удаляем элемент из контейнера
+        Connections.erase(it);  // удаляем элемент из контейнера
         goto I_hate_Cpp;
     }
 }
@@ -59,7 +59,7 @@ bool Pole::EaseAllBonds()
     I_hate_Cpp:
     for (auto it = Connections.begin(); it != Connections.end(); ++it)
     {
-        if ((*it)->d_reliability <= 0)
+        if ((*it)->GetReliability() <= 0)
         {
             delete *it;
             Connections.erase(it);
@@ -70,3 +70,10 @@ bool Pole::EaseAllBonds()
     return false;
 
 }
+
+double Pole::GetValue() const
+{
+    return d_value;
+}
+
+

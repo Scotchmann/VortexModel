@@ -351,7 +351,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 ///--	value	- текущее заводимое значение
 ///--
 Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в кольцо значение
-                                       double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
+                                    double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
 )
 {
 
@@ -429,13 +429,13 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
         ///--
         double bias = 0;
 
-        if (value > PolesRing[0]->d_value)
+        if (value > PolesRing[0]->GetValue())
         {
-            bias = 100 - PolesRing[0]->d_value / (value / 100);
+            bias = 100 - PolesRing[0]->GetValue() / (value / 100);
         }
         else
         {
-            bias = 100 - value / (PolesRing[0]->d_value / 100);
+            bias = 100 - value / (PolesRing[0]->GetValue() / 100);
         }
 
         ///--
@@ -449,7 +449,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
             ///--Если заводимое значение больше нулевого полюса
             ///--то:
             ///--
-            if (value > PolesRing[0]->d_value)
+            if (value > PolesRing[0]->GetValue())
             {
                 //добавляем в конец
                 AddNewPoleToPolesRing(ptr_NewPole, true);
@@ -484,14 +484,14 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
         for (int i = 0; i != PolesRing.size(); ++i)	// Цикл перебора кольца
         {
 
-            if (value == PolesRing[i]->d_value)
+            if (value == PolesRing[i]->GetValue())
             {
                 Answer = ProcessPole(PolesRing[i], value);	// формируем ответ
                 ptr_TargetPole = PolesRing[i];				// связываем целевой полюс с новым
                 break;
             }
 
-            else if (i == 0 && value > PolesRing[i]->d_value)
+            else if (i == 0 && value > PolesRing[i]->GetValue())
             {
                 continue;
             }
@@ -501,7 +501,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--то выясняем нужно ли добавлять в начало новый полюс
                 ///--или работать с первым
                 ///--
-            else if ((i == 0 && value < PolesRing[i]->d_value) || (i == 1 && value < PolesRing[i]->d_value && value < PolesRing[i - 1]->d_value))
+            else if ((i == 0 && value < PolesRing[i]->GetValue()) || (i == 1 && value < PolesRing[i]->GetValue() && value < PolesRing[i - 1]->GetValue()))
             {
 
                 ///--
@@ -510,7 +510,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--
                 double bias = 0;
 
-                bias = 100 - value / (PolesRing[0]->d_value / 100);
+                bias = 100 - value / (PolesRing[0]->GetValue() / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -536,17 +536,17 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--Если заводимое значение меньше текущего перебираемого полюса и больше предыдущего
                 ///--перебранного полюса, то пытаемся втиснуть заводимое значение между ними.
                 ///--
-            else if (i > 0 && value < PolesRing[i]->d_value && value > PolesRing[i - 1]->d_value)
+            else if (i > 0 && value < PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
             {
                 ///--
                 ///--Для этого:
                 ///--	из текущего перебираемого полюса вычитаем заводимое значение
                 ///--	из заводимого значения вычитаем предыдущий перебранный полюс
                 ///--
-                double a = PolesRing[i]->d_value - value;		// разность между текущим перебираемым полюсом и заводимым значением
-                double b = value - PolesRing[i - 1]->d_value;	// разность между заводимым значением и предыдущим перебранным
-                double bias = 0;								// переменная для хранения смещения в процентах
-                Pole * ptr_PoleToWorkWith = nullptr;			// переменная для записи рабочего полюса
+                double a = PolesRing[i]->GetValue() - value;		// разность между текущим перебираемым полюсом и заводимым значением
+                double b = value - PolesRing[i - 1]->GetValue();	// разность между заводимым значением и предыдущим перебранным
+                double bias = 0;								    // переменная для хранения смещения в процентах
+                Pole * ptr_PoleToWorkWith = nullptr;			    // переменная для записи рабочего полюса
 
                 ///--
                 ///--Затем вычисляем смещение в процентах относительно наименьшей разности
@@ -557,12 +557,12 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--
                 if (a < b)
                 {
-                    bias = 100 - value / (PolesRing[i]->d_value / 100);
+                    bias = 100 - value / (PolesRing[i]->GetValue() / 100);
                     ptr_PoleToWorkWith = PolesRing[i];						// Назначаем рабочий полюс
                 }
                 else
                 {
-                    bias = 100 - PolesRing[i - 1]->d_value / (value / 100);
+                    bias = 100 - PolesRing[i - 1]->GetValue() / (value / 100);
                     ptr_PoleToWorkWith = PolesRing[i - 1];					// --
                 }
 
@@ -594,7 +594,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 break;
             }
 
-            else if (i > 0 && (i < PolesRing.size() - 1) && value > PolesRing[i]->d_value && value > PolesRing[i - 1]->d_value)
+            else if (i > 0 && (i < PolesRing.size() - 1) && value > PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
             {
                 continue;
             }
@@ -604,14 +604,14 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--и предыдущего перебранного полюса
                 ///--то:
                 ///--
-            else if ((i == PolesRing.size() - 1) && value > PolesRing[i]->d_value && value > PolesRing[i - 1]->d_value)
+            else if ((i == PolesRing.size() - 1) && value > PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
             {
                 ///--
                 ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
                 ///--чем на _Step процентов
                 ///--
                 double bias = 0;
-                bias = 100 - PolesRing[i]->d_value / (value / 100);
+                bias = 100 - PolesRing[i]->GetValue() / (value / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -659,8 +659,8 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
     {
         for (int i = 0; i != PolesRing.size(); ++i)
         {
-            double d_max = max(prev_value, PolesRing[i]->d_value);	// максимальное значение
-            double d_min = min(prev_value, PolesRing[i]->d_value);	// минимальное значение
+            double d_max = max(prev_value, PolesRing[i]->GetValue());	// максимальное значение
+            double d_min = min(prev_value, PolesRing[i]->GetValue());	// минимальное значение
             double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
                                                                     // и минимальным значением относительно максимального
 
@@ -805,13 +805,13 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
         ///--
         double bias = 0;
 
-        if (denominator > DenominatorsRing[0]->d_value)
+        if (denominator > DenominatorsRing[0]->GetValue())
         {
-            bias = 100 - DenominatorsRing[0]->d_value / (denominator / 100);
+            bias = 100 - DenominatorsRing[0]->GetValue() / (denominator / 100);
         }
         else
         {
-            bias = 100 - denominator / (DenominatorsRing[0]->d_value / 100);
+            bias = 100 - denominator / (DenominatorsRing[0]->GetValue() / 100);
         }
 
         ///--
@@ -825,7 +825,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
             ///--Если заводимое значение больше нулевого полюса
             ///--то:
             ///--
-            if (denominator > DenominatorsRing[0]->d_value)
+            if (denominator > DenominatorsRing[0]->GetValue())
             {
                 //добавляем в конец
                 AddNewPoleToPolesRing(ptr_NewPole, true);
@@ -860,14 +860,14 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
         for (int i = 0; i != DenominatorsRing.size(); ++i)	// Цикл перебора кольца
         {
 
-            if (denominator == DenominatorsRing[i]->d_value)
+            if (denominator == DenominatorsRing[i]->GetValue())
             {
                 Answer = ProcessPole(DenominatorsRing[i], denominator);	// формируем ответ
                 ptr_TargetPole = DenominatorsRing[i];				// связываем целевой полюс с новым
                 break;
             }
 
-            else if (i == 0 && denominator > DenominatorsRing[i]->d_value)
+            else if (i == 0 && denominator > DenominatorsRing[i]->GetValue())
             {
                 continue;
             }
@@ -877,7 +877,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--то выясняем нужно ли добавлять в начало новый полюс
                 ///--или работать с первым
                 ///--
-            else if ((i == 0 && denominator < DenominatorsRing[i]->d_value) || (i == 1 && denominator < DenominatorsRing[i]->d_value && denominator < DenominatorsRing[i - 1]->d_value))
+            else if ((i == 0 && denominator < DenominatorsRing[i]->GetValue()) || (i == 1 && denominator < DenominatorsRing[i]->GetValue() && denominator < DenominatorsRing[i - 1]->GetValue()))
             {
 
                 ///--
@@ -886,7 +886,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--
                 double bias = 0;
 
-                bias = 100 - denominator / (DenominatorsRing[0]->d_value / 100);
+                bias = 100 - denominator / (DenominatorsRing[0]->GetValue() / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -912,15 +912,15 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--Если заводимое значение меньше текущего перебираемого полюса и больше предыдущего
                 ///--перебранного полюса, то пытаемся втиснуть заводимое значение между ними.
                 ///--
-            else if (i > 0 && denominator < DenominatorsRing[i]->d_value && denominator > DenominatorsRing[i - 1]->d_value)
+            else if (i > 0 && denominator < DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
             {
                 ///--
                 ///--Для этого:
                 ///--	из текущего перебираемого полюса вычитаем заводимое значение
                 ///--	из заводимого значения вычитаем предыдущий перебранный полюс
                 ///--
-                double a = DenominatorsRing[i]->d_value - denominator;		// разность между текущим перебираемым полюсом и заводимым значением
-                double b = denominator - DenominatorsRing[i - 1]->d_value;	// разность между заводимым значением и предыдущим перебранным
+                double a = DenominatorsRing[i]->GetValue() - denominator;		// разность между текущим перебираемым полюсом и заводимым значением
+                double b = denominator - DenominatorsRing[i - 1]->GetValue();	// разность между заводимым значением и предыдущим перебранным
                 double bias = 0;								// переменная для хранения смещения в процентах
                 Pole * ptr_PoleToWorkWith = nullptr;			// переменная для записи рабочего полюса
 
@@ -933,12 +933,12 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--
                 if (a < b)
                 {
-                    bias = 100 - denominator / (DenominatorsRing[i]->d_value / 100);
+                    bias = 100 - denominator / (DenominatorsRing[i]->GetValue() / 100);
                     ptr_PoleToWorkWith = DenominatorsRing[i];						// Назначаем рабочий полюс
                 }
                 else
                 {
-                    bias = 100 - DenominatorsRing[i - 1]->d_value / (denominator / 100);
+                    bias = 100 - DenominatorsRing[i - 1]->GetValue() / (denominator / 100);
                     ptr_PoleToWorkWith = DenominatorsRing[i - 1];					// --
                 }
 
@@ -970,7 +970,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 break;
             }
 
-            else if (i > 0 && (i < DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->d_value && denominator > DenominatorsRing[i - 1]->d_value)
+            else if (i > 0 && (i < DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
             {
                 continue;
             }
@@ -980,14 +980,14 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--и предыдущего перебранного полюса
                 ///--то:
                 ///--
-            else if ((i == DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->d_value && denominator > DenominatorsRing[i - 1]->d_value)
+            else if ((i == DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
             {
                 ///--
                 ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
                 ///--чем на _Step процентов
                 ///--
                 double bias = 0;
-                bias = 100 - DenominatorsRing[i]->d_value / (denominator / 100);
+                bias = 100 - DenominatorsRing[i]->GetValue() / (denominator / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -1035,8 +1035,8 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
     {
         for (int i = 0; i != DenominatorsRing.size(); ++i)
         {
-            double d_max = max(prev_denominator, DenominatorsRing[i]->d_value);	// максимальное значение
-            double d_min = min(prev_denominator, DenominatorsRing[i]->d_value);	// минимальное значение
+            double d_max = max(prev_denominator, DenominatorsRing[i]->GetValue());	// максимальное значение
+            double d_min = min(prev_denominator, DenominatorsRing[i]->GetValue());	// минимальное значение
             double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
             // и минимальным значением относительно максимального
             if(bias < int_Step)
@@ -1123,8 +1123,8 @@ Forecast * Vortex::ProcessPole(Pole * _pole, double value)
     ///--
     if (_pole->Connections.size() > 0)
     {
-        answer->value		= _pole->Connections[0]->ptr_target_Pole->d_value;
-        answer->reliability	= _pole->Connections[0]->d_reliability;
+        answer->value		= _pole->Connections[0]->ptr_target_Pole->GetValue();
+        answer->reliability	= _pole->Connections[0]->GetReliability();
     }
 
 

@@ -58,3 +58,10 @@ bool Bond::Ease()
     return false;
 }
 
+double Bond::GetReliability() const
+{
+    return d_reliability;
+}
+
+
+

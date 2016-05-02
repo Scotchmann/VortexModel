@@ -27,23 +27,27 @@ public:
     Pole * ptr_source_Pole = nullptr;	// Полюс источник
     Pole * ptr_target_Pole = nullptr;	// Целевой полюс
     double d_value;						// Значение
-    double d_reliability;				// Надежность
+
 
     ///--
     ///--Публичные методы
     ///--
-    bool Strengthen	(double Step = 0);
-    bool Ease		();
+    bool Strengthen	        (double Step = 0);  // Укрепить связь
+    bool Ease		        ();                 // Ослабить связь
+    double GetReliability   () const;           // Получить надежность
+
 
 private:
 
-    double d_maxDouble;											// Максимальное значение типа
+
 
     ///--
     ///--Приватные поля
     ///--
     double d_strengthen_Step;									// Шаг укрепления
     double d_easing_Ratio;										// Коэффициент ослабления
+    double d_reliability;				                        // Надежность
+    double d_maxDouble;											// Максимальное значение типа
 
 };
 

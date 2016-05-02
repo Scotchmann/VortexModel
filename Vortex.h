@@ -64,7 +64,7 @@ private:
     ///--Компаратор полюсов
     ///--
     struct PoleComparator {
-        bool operator() (const Pole * left, const Pole * right) { return (left->d_value < right->d_value); }
+        bool operator() (const Pole * left, const Pole * right) { return (left->GetValue() < right->GetValue()); }
     } PoleComparatorObject;
 
     struct ForecastComparator {
