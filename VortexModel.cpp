@@ -1,7 +1,7 @@
 // TestDLL.cpp : Defines the exported functions for the DLL application.
 //
 #include "VortexModel.h"
-
+#include <root/TRandom.h>
 using namespace std;
 
 Vortex * ptr_UpVortex;
@@ -120,14 +120,14 @@ int DrawChart()
     vector<float> arrX;  // Вектор иксов
 
 
-    for(int i = 0; i < 2; ++i)
+    for(int i = 0; i <= 1; ++i)
     {
         arrY.push_back(rand() % 145 +1);
         //arrY.push_back(i);
 
     }
 
-    for(int i = 0; i < 2; ++i)
+    for(int i = 0; i <= 1; ++i)
     {
         arrX.push_back(rand() % 145 +1);
         //arrX.push_back(i);
@@ -156,7 +156,7 @@ int DrawChart()
 
     }
 
-    _count = arrX.size();
+    _count = (int)arrX.size();
     glutDisplayFunc(display);
     display();
     //    glutMainLoop();
