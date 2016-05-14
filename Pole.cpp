@@ -34,7 +34,7 @@ Pole::~Pole()
 ///--
 ///--Сортирует связи полюса
 ///--
-bool Pole::SortSourceConnections()
+bool Pole::sortSourceConnections()
 {
     sort(Connections.begin(), Connections.end(), BondComparatorObject);
     return true;
@@ -43,7 +43,7 @@ bool Pole::SortSourceConnections()
 ///--
 ///--Ослабляет все связи в полюсе
 ///--
-bool Pole::EaseAllBonds()
+bool Pole::easeAllBonds()
 {
     ///--
     ///--1. Собственно ослабляем все связи

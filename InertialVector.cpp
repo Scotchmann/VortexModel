@@ -6,30 +6,30 @@
 
 double InertialVector::getValue() const
 {
-    return value;
+    return d_value;
 }
 
 void InertialVector::setValue(double value)
 {
-    InertialVector::value = value;
+    InertialVector::d_value = value;
 }
 
 double InertialVector::getReliability() const
 {
-    return reliability;
+    return d_reliability;
 }
 
 void InertialVector::setReliability(double reliability)
 {
-    InertialVector::reliability = reliability;
+    InertialVector::d_reliability = reliability;
 }
 
 int InertialVector::getDistance() const
 {
-    return distance;
+    return i_distance;
 }
 
 void InertialVector::setDistance(int distance)
 {
-    InertialVector::distance = distance;
+    InertialVector::i_distance = distance;
 }

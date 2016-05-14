@@ -30,9 +30,10 @@ public:
     ///--
     ///--Публичные методы
     ///--
-    bool SortSourceConnections	();
-    bool EaseAllBonds			();
+    bool sortSourceConnections();
+    bool easeAllBonds();
     double getValue             () const;
+
 
 private:
 

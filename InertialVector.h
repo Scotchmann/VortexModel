@@ -21,9 +21,9 @@ public:
 
 private:
 
-    double  value;		    // Значение инерции
-    double  reliability;    // Надежность инерции
-    int     distance;	    // Дистанция инерции
+    double  d_value;        // Значение инерции
+    double  d_reliability;  // Надежность инерции
+    int     i_distance;	    // Дистанция инерции
 
 };
 

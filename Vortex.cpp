@@ -39,7 +39,7 @@ Vortex::~Vortex()
 
 ///--
 ///--Заведение агента в вихрь
-///--	value 	-	следующее значение
+///--	d_value 	-	следующее значение
 ///--
 double Vortex::pushAgent(double value)
 {
@@ -86,7 +86,7 @@ double Vortex::pushAgent(double value)
     //if (CumulativeInertialVector.size() > 0)
     //{
     //	//sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
-    //	return CumulativeInertialVector[0].value;
+    //	return CumulativeInertialVector[0].d_value;
     //}
 
     double fvecsize = 0;
@@ -107,12 +107,12 @@ double Vortex::pushAgent(double value)
 
 }
 
-double Vortex::GetAgent(int i, int j)
+double Vortex::getAgent(int i, int j)
 {
     return (double)PolesRing.size();
 }
 
-double Vortex::GetBuf()
+double Vortex::getBuf()
 {
     return 0;
 }
@@ -120,7 +120,7 @@ double Vortex::GetBuf()
 ///--
 ///--Получение дистанции инерции
 ///--
-int Vortex::GetDistance()
+int Vortex::getDistance()
 {
     if (CumulativeInertialVector.size() > 0)
     {
@@ -250,10 +250,10 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                     //if ((*ptr_array)[i - 1 - level][j + 1].ReceivedForecast > 0)
                     //{
                     //	fcst =	PushToPolesRing (	(	(
-                    //										(*ptr_array)[i - 1][j + 1].value +	(*ptr_array)[i - 1 - level][j + 1].ReceivedForecast
+                    //										(*ptr_array)[i - 1][j + 1].d_value +	(*ptr_array)[i - 1 - level][j + 1].ReceivedForecast
                     //									) / 2															// получаем среднее арифметическое между фактическим и спрогнозированным значением
                     //								) / level,															// текущее значение по циклу
-                    //									(*ptr_array)[i - 1 - level][j + 1].value / level				// предыдущее значение по циклу
+                    //									(*ptr_array)[i - 1 - level][j + 1].d_value / level				// предыдущее значение по циклу
                     //							);
                     //}
                     //else
@@ -284,11 +284,11 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                     //--	Denominator = (A-B)/(A-C)
 
                     /*
-                        double Denominator     	= 	((*ptr_array)[i - 1][j + 1].value - (*ptr_array)[i][j - 1].value)
-                                                 /	((*ptr_array)[i - 1][j + 1].value - (*ptr_array)[i][j].value);
+                        double Denominator     	= 	((*ptr_array)[i - 1][j + 1].d_value - (*ptr_array)[i][j - 1].d_value)
+                                                 /	((*ptr_array)[i - 1][j + 1].d_value - (*ptr_array)[i][j].d_value);
 
-                        double prev_Denominator	= 	((*ptr_array)[i - 1 - level][j + 1].value - (*ptr_array)[i - level][j - 1].value)
-                                                 /	((*ptr_array)[i - 1 - level][j + 1].value - (*ptr_array)[i - level][j].value);
+                        double prev_Denominator	= 	((*ptr_array)[i - 1 - level][j + 1].d_value - (*ptr_array)[i - level][j - 1].d_value)
+                                                 /	((*ptr_array)[i - 1 - level][j + 1].d_value - (*ptr_array)[i - level][j].d_value);
 
 
                         InertialVector * fcst_denom = PushToDenominatorsRing(Denominator, prev_Denominator);
@@ -348,7 +348,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 
 ///--
 ///--Заводит значение треугольной матрицы в кольцо
-///--	value	- текущее заводимое значение
+///--	d_value	- текущее заводимое значение
 ///--
 InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое в кольцо значение
                                     double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
@@ -661,8 +661,8 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
         {
             double d_max = max(prev_value, PolesRing[i]->getValue());	// максимальное значение
             double d_min = min(prev_value, PolesRing[i]->getValue());	// минимальное значение
-            double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
-                                                                    // и минимальным значением относительно максимального
+            double bias = 100 - d_min / (d_max / 100);				    // смещение в процентах между максимальным
+                                                                        // и минимальным значением относительно максимального
 
             if(bias < int_Step)
             {
@@ -679,7 +679,6 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
                 ///--то укрепляем её
                 ///--если нет - создаем новую связь
                 ///--
-
                 int _ConnectionsSize = (int)(PolesRing[i]->Connections.size());	// количество связей
                 bool IsBondFound = false;										// флаг для записи признака найдена ли связь
 
@@ -711,7 +710,7 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
                     ///--
                     ///--После добавления сортируем связи в полюсе
                     ///--
-                    ptr_SourcePole->SortSourceConnections();
+                    ptr_SourcePole->sortSourceConnections();
                 }
             }
         }
@@ -722,7 +721,7 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
     ///--
     for (int i = 0; i != PolesRing.size(); ++i)
     {
-        PolesRing[i]->EaseAllBonds();
+        PolesRing[i]->easeAllBonds();
     }
 
     return Answer;
@@ -1086,7 +1085,7 @@ InertialVector * Vortex::PushToDenominatorsRing( double denominator,			// зав
                     ///--
                     ///--После добавления сортируем связи в полюсе
                     ///--
-                    ptr_SourcePole->SortSourceConnections();
+                    ptr_SourcePole->sortSourceConnections();
                 }
             }
         }
@@ -1097,7 +1096,7 @@ InertialVector * Vortex::PushToDenominatorsRing( double denominator,			// зав
     ///--
     for (int i = 0; i != DenominatorsRing.size(); ++i)
     {
-        DenominatorsRing[i]->EaseAllBonds();
+        DenominatorsRing[i]->easeAllBonds();
     }
 
     return Answer;
@@ -1145,13 +1144,13 @@ void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isPush, int index)
         ///--
         ///--Перебираем число связей по порядку
         ///--
-        for (int i = 0; true; i++)
+        for (int i = 0; true; ++i)
         {
             ///--
             ///--Перебираем упорядоченное кольцо
             ///--и сравниваем с предложенным числом связей
             ///--
-            for (auto o_it = OrderedPolesRing.begin(); o_it != OrderedPolesRing.end(); o_it++)
+            for (auto o_it = OrderedPolesRing.begin(); o_it != OrderedPolesRing.end(); ++o_it)
             {
                 ///--
                 ///--И если такое количество связей нашлось

@@ -59,7 +59,7 @@ double getAgent(int i, int j, bool Up)
 
     //Up ? size = AgentsUpTrend[i][j].InnerAgent->mutation_percentage : size = AgentsDownTrend[i][j].InnerAgent->mutation_percentage;
 
-    size = ptr_UpVortex->GetAgent(i, j);
+    size = ptr_UpVortex->getAgent(i, j);
 
     return size;
 }
@@ -67,7 +67,7 @@ double getAgent(int i, int j, bool Up)
 int GetDistance()
 {
     int i = 0;
-    i = ptr_UpVortex->GetDistance();
+    i = ptr_UpVortex->getDistance();
 
     return i;
 }
@@ -75,7 +75,7 @@ int GetDistance()
 double GetBuf()
 {
     double i = 0;
-    i = ptr_UpVortex->GetBuf();
+    i = ptr_UpVortex->getBuf();
 
     return i;
 }

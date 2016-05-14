@@ -23,10 +23,10 @@ public:
     Vortex	(int ArraySize = 0, int Generation = 0, double Step = 0.00006, int MaxSizeOfRing = 5000, double EasingRatio = 0.001);
     ~Vortex	();
     double 	pushAgent		(double);				// Заведение значения в матрицу
-    double 	GetAgent		(int i, int j);			// Получение поколения агента
-    void 	SetGeneration	(int);					// Установка поколения агента
-    double  GetBuf			();
-    int		GetDistance		();
+    double 	getAgent        (int i, int j);			// Получение поколения агента
+    void 	setGeneration   (int);					// Установка поколения агента
+    double  getBuf          ();
+    int		getDistance();
 
     AgentsArray 	_Agents;			// Агенты матрицы
 
