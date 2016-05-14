@@ -59,7 +59,7 @@ bool Pole::EaseAllBonds()
     I_hate_Cpp:
     for (auto it = Connections.begin(); it != Connections.end(); ++it)
     {
-        if ((*it)->GetReliability() <= 0)
+        if ((*it)->getReliability() <= 0)
         {
             delete *it;
             Connections.erase(it);
@@ -71,7 +71,7 @@ bool Pole::EaseAllBonds()
 
 }
 
-double Pole::GetValue() const
+double Pole::getValue() const
 {
     return d_value;
 }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VORTEXMODEL_LINUX_BOND_H
+#define VORTEXMODEL_LINUX_BOND_H
 #include "vector"
 #include "map"
 
@@ -14,7 +15,7 @@ public:
     ///--Конструкторы
     ///--
     Bond	();
-    Bond	(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double stengthen_step = 1);
+    Bond	(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step = 1);
 
     ///--
     ///--Деструкторы
@@ -34,8 +35,8 @@ public:
     ///--
     bool Strengthen	        (double Step = 0);  // Укрепить связь
     bool Ease		        ();                 // Ослабить связь
-    double GetReliability   () const;           // Получить надежность
-    Pole * GetTargetPole    ();                 // Получить целевой полюс
+    double getReliability   () const;           // Получить надежность
+    Pole * getTargetPole    ();                 // Получить целевой полюс
 
 
 private:
@@ -53,3 +54,4 @@ private:
 
 };
 
+#endif //VORTEXMODEL_LINUX_BOND_H

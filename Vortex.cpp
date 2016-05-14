@@ -83,21 +83,21 @@ double Vortex::pushAgent(double value)
     ///--Возращаем размер массива
     ///--
 
-    //if (ForecastVector.size() > 0)
+    //if (CumulativeInertialVector.size() > 0)
     //{
-    //	//sort(ForecastVector.begin(), ForecastVector.end(), ForecastComparatorObject);
-    //	return ForecastVector[0].value;
+    //	//sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
+    //	return CumulativeInertialVector[0].value;
     //}
 
     double fvecsize = 0;
-    fvecsize = (double)ForecastVector.size();
+    fvecsize = (double)CumulativeInertialVector.size();
 
 
     CheckIfForecastIsEmty:
-    for (auto it = ForecastVector.begin(); it != ForecastVector.end(); ++it)
+    for (auto it = CumulativeInertialVector.begin(); it != CumulativeInertialVector.end(); ++it)
     {
         delete *it;
-        ForecastVector.erase(it);
+        CumulativeInertialVector.erase(it);
         goto CheckIfForecastIsEmty;
     }
 
@@ -118,14 +118,14 @@ double Vortex::GetBuf()
 }
 
 ///--
-///--Получение дистанции прогноза
+///--Получение дистанции инерции
 ///--
 int Vortex::GetDistance()
 {
-    if (ForecastVector.size() > 0)
+    if (CumulativeInertialVector.size() > 0)
     {
-        sort(ForecastVector.begin(), ForecastVector.end(), ForecastComparatorObject);
-        return ForecastVector[0]->distance;
+        sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
+        return CumulativeInertialVector[0]->getDistance();
     }
     return 0;
 }
@@ -144,7 +144,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 
     //Agent * ptr_currentInnerAgent = (*ptr_array)[i - 1][j + 1].InnerAgent;
 
-    Forecast * fcst = new Forecast();
+    InertialVector * fcst = new InertialVector();
 
     ///--
     ///--Выстраиваем треугольную суммирующую матрицу
@@ -291,16 +291,16 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                                                  /	((*ptr_array)[i - 1 - level][j + 1].value - (*ptr_array)[i - level][j].value);
 
 
-                        Forecast * fcst_denom = PushToDenominatorsRing(Denominator, prev_Denominator);
+                        InertialVector * fcst_denom = PushToDenominatorsRing(Denominator, prev_Denominator);
                     */
 
 
                     if(fcst != nullptr)
                     {
-                        fcst->value = fcst->value * level;
-                        fcst->distance = level;
-                        ForecastVector.push_back(fcst);
-                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->value;
+                        fcst->setValue(fcst->getValue() * level);
+                        fcst->setDistance(level);
+                        CumulativeInertialVector.push_back(fcst);
+                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
                     }
                 }
                     //--
@@ -312,10 +312,10 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 
                     if (fcst != nullptr)
                     {
-                        fcst->value = fcst->value * level;
-                        fcst->distance = level;
-                        ForecastVector.push_back(fcst);
-                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->value;
+                        fcst->setValue(fcst->getValue() * level);
+                        fcst->setDistance(level);
+                        CumulativeInertialVector.push_back(fcst);
+                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
                     }
                 }
             }
@@ -342,7 +342,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
     }
     else
     {
-        return; // вектор прогноза
+        return; // вектор инерции
     }
 }
 
@@ -350,7 +350,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 ///--Заводит значение треугольной матрицы в кольцо
 ///--	value	- текущее заводимое значение
 ///--
-Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в кольцо значение
+InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое в кольцо значение
                                     double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
 )
 {
@@ -367,7 +367,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
     ///--
     Pole * ptr_TargetPole = nullptr;
 
-    Forecast * Answer = nullptr;
+    InertialVector * Answer = nullptr;
 
 
     ///--
@@ -429,13 +429,13 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
         ///--
         double bias = 0;
 
-        if (value > PolesRing[0]->GetValue())
+        if (value > PolesRing[0]->getValue())
         {
-            bias = 100 - PolesRing[0]->GetValue() / (value / 100);
+            bias = 100 - PolesRing[0]->getValue() / (value / 100);
         }
         else
         {
-            bias = 100 - value / (PolesRing[0]->GetValue() / 100);
+            bias = 100 - value / (PolesRing[0]->getValue() / 100);
         }
 
         ///--
@@ -449,7 +449,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
             ///--Если заводимое значение больше нулевого полюса
             ///--то:
             ///--
-            if (value > PolesRing[0]->GetValue())
+            if (value > PolesRing[0]->getValue())
             {
                 //добавляем в конец
                 AddNewPoleToPolesRing(ptr_NewPole, true);
@@ -484,14 +484,14 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
         for (int i = 0; i != PolesRing.size(); ++i)	// Цикл перебора кольца
         {
 
-            if (value == PolesRing[i]->GetValue())
+            if (value == PolesRing[i]->getValue())
             {
                 Answer = ProcessPole(PolesRing[i], value);	// формируем ответ
                 ptr_TargetPole = PolesRing[i];				// связываем целевой полюс с новым
                 break;
             }
 
-            else if (i == 0 && value > PolesRing[i]->GetValue())
+            else if (i == 0 && value > PolesRing[i]->getValue())
             {
                 continue;
             }
@@ -501,7 +501,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--то выясняем нужно ли добавлять в начало новый полюс
                 ///--или работать с первым
                 ///--
-            else if ((i == 0 && value < PolesRing[i]->GetValue()) || (i == 1 && value < PolesRing[i]->GetValue() && value < PolesRing[i - 1]->GetValue()))
+            else if ((i == 0 && value < PolesRing[i]->getValue()) || (i == 1 && value < PolesRing[i]->getValue() && value < PolesRing[i - 1]->getValue()))
             {
 
                 ///--
@@ -510,7 +510,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--
                 double bias = 0;
 
-                bias = 100 - value / (PolesRing[0]->GetValue() / 100);
+                bias = 100 - value / (PolesRing[0]->getValue() / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -536,15 +536,15 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--Если заводимое значение меньше текущего перебираемого полюса и больше предыдущего
                 ///--перебранного полюса, то пытаемся втиснуть заводимое значение между ними.
                 ///--
-            else if (i > 0 && value < PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
+            else if (i > 0 && value < PolesRing[i]->getValue() && value > PolesRing[i - 1]->getValue())
             {
                 ///--
                 ///--Для этого:
                 ///--	из текущего перебираемого полюса вычитаем заводимое значение
                 ///--	из заводимого значения вычитаем предыдущий перебранный полюс
                 ///--
-                double a = PolesRing[i]->GetValue() - value;		// разность между текущим перебираемым полюсом и заводимым значением
-                double b = value - PolesRing[i - 1]->GetValue();	// разность между заводимым значением и предыдущим перебранным
+                double a = PolesRing[i]->getValue() - value;		// разность между текущим перебираемым полюсом и заводимым значением
+                double b = value - PolesRing[i - 1]->getValue();	// разность между заводимым значением и предыдущим перебранным
                 double bias = 0;								    // переменная для хранения смещения в процентах
                 Pole * ptr_PoleToWorkWith = nullptr;			    // переменная для записи рабочего полюса
 
@@ -557,12 +557,12 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--
                 if (a < b)
                 {
-                    bias = 100 - value / (PolesRing[i]->GetValue() / 100);
+                    bias = 100 - value / (PolesRing[i]->getValue() / 100);
                     ptr_PoleToWorkWith = PolesRing[i];						// Назначаем рабочий полюс
                 }
                 else
                 {
-                    bias = 100 - PolesRing[i - 1]->GetValue() / (value / 100);
+                    bias = 100 - PolesRing[i - 1]->getValue() / (value / 100);
                     ptr_PoleToWorkWith = PolesRing[i - 1];					// --
                 }
 
@@ -594,7 +594,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 break;
             }
 
-            else if (i > 0 && (i < PolesRing.size() - 1) && value > PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
+            else if (i > 0 && (i < PolesRing.size() - 1) && value > PolesRing[i]->getValue() && value > PolesRing[i - 1]->getValue())
             {
                 continue;
             }
@@ -604,14 +604,14 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                 ///--и предыдущего перебранного полюса
                 ///--то:
                 ///--
-            else if ((i == PolesRing.size() - 1) && value > PolesRing[i]->GetValue() && value > PolesRing[i - 1]->GetValue())
+            else if ((i == PolesRing.size() - 1) && value > PolesRing[i]->getValue() && value > PolesRing[i - 1]->getValue())
             {
                 ///--
                 ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
                 ///--чем на _Step процентов
                 ///--
                 double bias = 0;
-                bias = 100 - PolesRing[i]->GetValue() / (value / 100);
+                bias = 100 - PolesRing[i]->getValue() / (value / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -659,8 +659,8 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
     {
         for (int i = 0; i != PolesRing.size(); ++i)
         {
-            double d_max = max(prev_value, PolesRing[i]->GetValue());	// максимальное значение
-            double d_min = min(prev_value, PolesRing[i]->GetValue());	// минимальное значение
+            double d_max = max(prev_value, PolesRing[i]->getValue());	// максимальное значение
+            double d_min = min(prev_value, PolesRing[i]->getValue());	// минимальное значение
             double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
                                                                     // и минимальным значением относительно максимального
 
@@ -692,7 +692,7 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
                     ///--Если указатели соотвествуют
                     ///--то укрепляем связь
                     ///--
-                    if (ptr_SourcePole->Connections[j]->GetTargetPole() == ptr_TargetPole)
+                    if (ptr_SourcePole->Connections[j]->getTargetPole() == ptr_TargetPole)
                     {
                         IsBondFound = true;								// взводим флаг, так как связь найдена
                         ptr_SourcePole->Connections[j]->Strengthen(); 	// укрепляем связь
@@ -728,9 +728,9 @@ Forecast * Vortex::PushToPolesRing(	double value,		// заводимое в ко
     return Answer;
 }
 
-Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводимый деноминатор в кольцо деноминаторов
+InertialVector * Vortex::PushToDenominatorsRing( double denominator,			// заводимый деноминатор в кольцо деноминаторов
                                            double prev_denominator		// предыдущий деноминатор
-)
+                                         )
 {
     ///--
     ///--Переменная для хранения имеющегося prev_value полюса
@@ -744,7 +744,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
     ///--
     Pole * ptr_TargetPole = nullptr;
 
-    Forecast * Answer = nullptr;
+    InertialVector * Answer = nullptr;
 
 
     ///--
@@ -805,13 +805,13 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
         ///--
         double bias = 0;
 
-        if (denominator > DenominatorsRing[0]->GetValue())
+        if (denominator > DenominatorsRing[0]->getValue())
         {
-            bias = 100 - DenominatorsRing[0]->GetValue() / (denominator / 100);
+            bias = 100 - DenominatorsRing[0]->getValue() / (denominator / 100);
         }
         else
         {
-            bias = 100 - denominator / (DenominatorsRing[0]->GetValue() / 100);
+            bias = 100 - denominator / (DenominatorsRing[0]->getValue() / 100);
         }
 
         ///--
@@ -825,7 +825,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
             ///--Если заводимое значение больше нулевого полюса
             ///--то:
             ///--
-            if (denominator > DenominatorsRing[0]->GetValue())
+            if (denominator > DenominatorsRing[0]->getValue())
             {
                 //добавляем в конец
                 AddNewPoleToPolesRing(ptr_NewPole, true);
@@ -860,14 +860,14 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
         for (int i = 0; i != DenominatorsRing.size(); ++i)	// Цикл перебора кольца
         {
 
-            if (denominator == DenominatorsRing[i]->GetValue())
+            if (denominator == DenominatorsRing[i]->getValue())
             {
                 Answer = ProcessPole(DenominatorsRing[i], denominator);	// формируем ответ
                 ptr_TargetPole = DenominatorsRing[i];				// связываем целевой полюс с новым
                 break;
             }
 
-            else if (i == 0 && denominator > DenominatorsRing[i]->GetValue())
+            else if (i == 0 && denominator > DenominatorsRing[i]->getValue())
             {
                 continue;
             }
@@ -877,7 +877,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--то выясняем нужно ли добавлять в начало новый полюс
                 ///--или работать с первым
                 ///--
-            else if ((i == 0 && denominator < DenominatorsRing[i]->GetValue()) || (i == 1 && denominator < DenominatorsRing[i]->GetValue() && denominator < DenominatorsRing[i - 1]->GetValue()))
+            else if ((i == 0 && denominator < DenominatorsRing[i]->getValue()) || (i == 1 && denominator < DenominatorsRing[i]->getValue() && denominator < DenominatorsRing[i - 1]->getValue()))
             {
 
                 ///--
@@ -886,7 +886,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--
                 double bias = 0;
 
-                bias = 100 - denominator / (DenominatorsRing[0]->GetValue() / 100);
+                bias = 100 - denominator / (DenominatorsRing[0]->getValue() / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -912,15 +912,15 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--Если заводимое значение меньше текущего перебираемого полюса и больше предыдущего
                 ///--перебранного полюса, то пытаемся втиснуть заводимое значение между ними.
                 ///--
-            else if (i > 0 && denominator < DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
+            else if (i > 0 && denominator < DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
             {
                 ///--
                 ///--Для этого:
                 ///--	из текущего перебираемого полюса вычитаем заводимое значение
                 ///--	из заводимого значения вычитаем предыдущий перебранный полюс
                 ///--
-                double a = DenominatorsRing[i]->GetValue() - denominator;		// разность между текущим перебираемым полюсом и заводимым значением
-                double b = denominator - DenominatorsRing[i - 1]->GetValue();	// разность между заводимым значением и предыдущим перебранным
+                double a = DenominatorsRing[i]->getValue() - denominator;		// разность между текущим перебираемым полюсом и заводимым значением
+                double b = denominator - DenominatorsRing[i - 1]->getValue();	// разность между заводимым значением и предыдущим перебранным
                 double bias = 0;								// переменная для хранения смещения в процентах
                 Pole * ptr_PoleToWorkWith = nullptr;			// переменная для записи рабочего полюса
 
@@ -933,12 +933,12 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--
                 if (a < b)
                 {
-                    bias = 100 - denominator / (DenominatorsRing[i]->GetValue() / 100);
+                    bias = 100 - denominator / (DenominatorsRing[i]->getValue() / 100);
                     ptr_PoleToWorkWith = DenominatorsRing[i];						// Назначаем рабочий полюс
                 }
                 else
                 {
-                    bias = 100 - DenominatorsRing[i - 1]->GetValue() / (denominator / 100);
+                    bias = 100 - DenominatorsRing[i - 1]->getValue() / (denominator / 100);
                     ptr_PoleToWorkWith = DenominatorsRing[i - 1];					// --
                 }
 
@@ -970,7 +970,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 break;
             }
 
-            else if (i > 0 && (i < DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
+            else if (i > 0 && (i < DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
             {
                 continue;
             }
@@ -980,14 +980,14 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                 ///--и предыдущего перебранного полюса
                 ///--то:
                 ///--
-            else if ((i == DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->GetValue() && denominator > DenominatorsRing[i - 1]->GetValue())
+            else if ((i == DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
             {
                 ///--
                 ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
                 ///--чем на _Step процентов
                 ///--
                 double bias = 0;
-                bias = 100 - DenominatorsRing[i]->GetValue() / (denominator / 100);
+                bias = 100 - DenominatorsRing[i]->getValue() / (denominator / 100);
 
                 ///--
                 ///--Если больше, то создаем новый полюс в кольце
@@ -1035,8 +1035,8 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
     {
         for (int i = 0; i != DenominatorsRing.size(); ++i)
         {
-            double d_max = max(prev_denominator, DenominatorsRing[i]->GetValue());	// максимальное значение
-            double d_min = min(prev_denominator, DenominatorsRing[i]->GetValue());	// минимальное значение
+            double d_max = max(prev_denominator, DenominatorsRing[i]->getValue());	// максимальное значение
+            double d_min = min(prev_denominator, DenominatorsRing[i]->getValue());	// минимальное значение
             double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
             // и минимальным значением относительно максимального
             if(bias < int_Step)
@@ -1067,7 +1067,7 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
                     ///--Если указатели соотвествуют
                     ///--то укрепляем связь
                     ///--
-                    if (ptr_SourcePole->Connections[j]->GetTargetPole() == ptr_TargetPole)
+                    if (ptr_SourcePole->Connections[j]->getTargetPole() == ptr_TargetPole)
                     {
                         IsBondFound = true;								// взводим флаг, так как связь найдена
                         ptr_SourcePole->Connections[j]->Strengthen(); 	// укрепляем связь
@@ -1105,17 +1105,17 @@ Forecast * Vortex::PushToDenominatorsRing( double denominator,			// заводи
 
 
 ///--
-///--Возвращает прогноз по полюсу
+///--Возвращает вектор инерции по полюсу
 ///--
-Forecast * Vortex::ProcessPole(Pole * _pole, double value)
+InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
 {
     ///--
-    ///--Создаем прогноз с нулевыми значениями
+    ///--Создаем вектор инерции с нулевыми значениями
     ///--
-    Forecast * answer = new Forecast();
-    answer->value		= 0;
-    answer->reliability	= 0;
-    answer->distance	= 0;
+    InertialVector * answer = new InertialVector();
+    answer->setValue(0);
+    answer->setReliability(0);
+    answer->setDistance(0);
 
     ///--
     ///--Если у полюса есть связи то выбираем первую
@@ -1123,13 +1123,13 @@ Forecast * Vortex::ProcessPole(Pole * _pole, double value)
     ///--
     if (_pole->Connections.size() > 0)
     {
-        answer->value		= _pole->Connections[0]->GetTargetPole()->GetValue();
-        answer->reliability	= _pole->Connections[0]->GetReliability();
+        answer->setValue(_pole->Connections[0]->getTargetPole()->getValue());
+        answer->setReliability(_pole->Connections[0]->getReliability());
     }
 
 
     ///--
-    ///--Если у полюса нет связей возвращаем прогноз с нулями
+    ///--Если у полюса нет связей возвращаем вектор инерции с нулями
     ///--
     return answer;
 }

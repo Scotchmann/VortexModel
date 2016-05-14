@@ -1,7 +1,7 @@
 // TestDLL.cpp : Defines the exported functions for the DLL application.
 //
 #include "VortexModel.h"
-#include <root/TRandom.h>
+//#include <root/TRandom.h>
 using namespace std;
 
 Vortex * ptr_UpVortex;
@@ -80,12 +80,12 @@ double GetBuf()
     return i;
 }
 
-void display(){                    // Функция перерисовки дисплея
+void display(){                    // Функция перерисовки экрана
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINES);
 
     glColor3f(1.0, 1.0, 1.0);
-    glVertex3f(0, 100, 0);   // Рисование системи координат
+    glVertex3f(0, 100, 0);   // Рисование системы координат
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
@@ -102,9 +102,9 @@ void display(){                    // Функция перерисовки ди
 
     glEnd();
 
-    glBegin(GL_POINTS); // Рисование точок графика функции
+    glBegin(GL_POINTS); // Рисование точек графика функции
     //glColor3f(0.13, 0.67, 0.82);
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(1.0, 1.0, 1.0);
     float y;
     for(int i = 0; i < _count; i++)
     {

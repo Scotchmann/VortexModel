@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VORTEXMODEL_LINUX_POLE_H
+#define VORTEXMODEL_LINUX_POLE_H
 #include <vector>
 #include "Bond.h"
 
@@ -31,7 +32,7 @@ public:
     ///--
     bool SortSourceConnections	();
     bool EaseAllBonds			();
-    double GetValue             () const;
+    double getValue             () const;
 
 private:
 
@@ -42,10 +43,11 @@ private:
     {
         bool operator() (const Bond * left, const Bond * right)
         {
-            return (left->GetReliability() > right->GetReliability());
+            return (left->getReliability() > right->getReliability());
         }
     } BondComparatorObject;
 
     double  d_value;    //Значение
 };
 
+#endif //VORTEXMODEL_LINUX_POLE_H

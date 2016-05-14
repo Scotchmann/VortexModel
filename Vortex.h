@@ -1,9 +1,12 @@
-#pragma once
+#ifndef VORTEXMODEL_LINUX_VORTEX_H
+#define VORTEXMODEL_LINUX_VORTEX_H
+
 #include "vector"
 #include "Agent.h"
 #include "algorithm"
 #include "Bond.h"
 #include "Pole.h"
+#include "InertialVector.h"
 #include <math.h>
 
 using namespace std;
@@ -12,16 +15,6 @@ class Vortex;
 
 typedef vector< vector< Agent > > AgentsArray;	// Алиас для массива агентов
 typedef vector< Vortex* > VortexArray;			// Алиас для массива вихря
-
-///--
-///--Структура прогноза
-///--
-struct Forecast
-{
-    double value;		// Значение прогноза
-    double reliability;	// Надежность прогноза
-    int distance;		// Дистанция прогноза
-};
 
 class Vortex
 {
@@ -51,24 +44,26 @@ private:
     vector<Pole *>	DenominatorsRing;	// Кольцо деноминаторов
     vector<Pole *>  OrderedPolesRing;	// Упорядоченное кольцо полюсов
 
-    vector<Forecast*> ForecastVector;   // Куммулятивный прогноз по диагонали
+    vector<InertialVector*> CumulativeInertialVector;   // Куммулятивная инерция по диагонали
 
 
-    void 		RecalculationOfMainPool		(int, int, AgentsArray *, int);				// Пересчет основного пула треугольной матрицы
-    Forecast *	PushToPolesRing				(double value, double prev_value = 0);		// Заведение значения в кольцо
-    Forecast *	PushToDenominatorsRing		(double value, double prev_value = 0);		// Заведение деноминатора в кольцо деноминаторов
-    Forecast *	ProcessPole					(Pole * _pole, double value); 				// Обработка полюса
+    void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int);				// Пересчет основного пула треугольной матрицы
+    InertialVector *	PushToPolesRing				(double value, double prev_value = 0);		// Заведение значения в кольцо
+    InertialVector *	PushToDenominatorsRing		(double value, double prev_value = 0);		// Заведение деноминатора в кольцо деноминаторов
+    InertialVector *	ProcessPole					(Pole * _pole, double value); 				// Обработка полюса
     void		AddNewPoleToPolesRing		(Pole * _pole, bool isPush, int index = 0);	// Заведение нового полюса в кольцо
 
     ///--
     ///--Компаратор полюсов
     ///--
     struct PoleComparator {
-        bool operator() (const Pole * left, const Pole * right) { return (left->GetValue() < right->GetValue()); }
+        bool operator() (const Pole * left, const Pole * right) { return (left->getValue() < right->getValue()); }
     } PoleComparatorObject;
 
     struct ForecastComparator {
-        bool operator() (const Forecast * left, const Forecast * right) { return (left->reliability > right->reliability); }
+        bool operator() (const InertialVector * left, const InertialVector * right) { return (left->getReliability() > right->getReliability()); }
     } ForecastComparatorObject;
 
 };
+
+#endif //VORTEXMODEL_LINUX_VORTEX_H

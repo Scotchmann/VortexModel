@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VORTEXMODEL_LINUX_VORTEXMODEL_H
+#define VORTEXMODEL_LINUX_VORTEXMODEL_H
 
 #include "Vortex.h"
 #include <GL/glut.h>
@@ -30,3 +31,5 @@ double GetBuf();
 void display();
 
 int DrawChart();
+
+#endif //VORTEXMODEL_LINUX_VORTEXMODEL_H

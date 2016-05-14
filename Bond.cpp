@@ -7,13 +7,13 @@ Bond::Bond()
     d_maxDouble = std::numeric_limits<double>::max();
 }
 
-Bond::Bond(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double stengthen_Step )
+Bond::Bond(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step )
 {
     ptr_source_Pole = source_Pole;
     ptr_target_Pole = target_Pole;
     d_easing_Ratio = easing_Ratio;
     d_reliability = 1;
-    d_strengthen_Step = stengthen_Step;
+    d_strengthen_Step = strengthen_step;
     d_maxDouble = std::numeric_limits<double>::max();
 }
 
@@ -58,12 +58,12 @@ bool Bond::Ease()
     return false;
 }
 
-double Bond::GetReliability() const
+double Bond::getReliability() const
 {
     return d_reliability;
 }
 
-Pole * Bond::GetTargetPole()
+Pole * Bond::getTargetPole()
 {
     return ptr_target_Pole;
 }
