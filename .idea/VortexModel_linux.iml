@@ -2,18 +2,20 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Bond.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Vortex.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Agent.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Pole.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Vortex.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Pole.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Vortex.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Bond.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/VortexModel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Bond.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InertialVector.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Agent.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pole.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InertialVector.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/VortexModel.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pole.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/VortexModel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Agent.cpp" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
