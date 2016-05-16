@@ -51,13 +51,13 @@ private:
     InertialVector *	PushToPolesRing				(double value, double prev_value = 0);		// Заведение значения в кольцо
     InertialVector *	PushToDenominatorsRing		(double value, double prev_value = 0);		// Заведение деноминатора в кольцо деноминаторов
     InertialVector *	ProcessPole					(Pole * _pole, double value); 				// Обработка полюса
-    void		AddNewPoleToPolesRing		(Pole * _pole, bool isPush, int index = 0);	// Заведение нового полюса в кольцо
+    void		AddNewPoleToPolesRing		(Pole * _pole, bool isToPush, int index = 0);	// Заведение нового полюса в кольцо
 
     ///--
     ///--Компаратор полюсов
     ///--
     struct PoleComparator {
-        bool operator() (const Pole * left, const Pole * right) { return (left->getValue() < right->getValue()); }
+        bool operator() (const Pole * left, const Pole * right) { return (left->getCumulativeReliability() < right->getCumulativeReliability()); }
     } PoleComparatorObject;
 
     struct ForecastComparator {

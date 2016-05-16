@@ -1133,47 +1133,85 @@ InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
     return answer;
 }
 
-void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isPush, int index)
+void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isToPush, int index)
 {
-    ///--
-    ///--Если мы превысили максимальный размер кольца
-    ///--то удаляем самый старый полюс с, по возможности, наименьшим количеством связей
-    ///--
+
+
+    sort(OrderedPolesRing.begin(), OrderedPolesRing.end(), PoleComparatorObject);
+
+    for(auto Ord_It = OrderedPolesRing.begin(); Ord_It != OrderedPolesRing.end(); ++Ord_It)
+    {
+        double t = 0;
+        t = (*Ord_It)->getCumulativeReliability();
+        if(t!=0)
+        {
+            t = t;
+        }
+    }
+
+//    ///--
+//    ///--Если мы превысили максимальный размер кольца
+//    ///--то удаляем самый старый полюс с, по возможности, наименьшим количеством связей
+//    ///--
+//    if ((int)PolesRing.size() >= int_MaxSizeOfRing)
+//    {
+//        ///--
+//        ///--Перебираем число связей по порядку
+//        ///--
+//        for (int i = 0; true; ++i)
+//        {
+//            ///--
+//            ///--Перебираем упорядоченное кольцо
+//            ///--и сравниваем с предложенным числом связей
+//            ///--
+//            for (auto o_it = OrderedPolesRing.begin(); o_it != OrderedPolesRing.end(); ++o_it)
+//            {
+//                ///--
+//                ///--И если такое количество связей нашлось
+//                ///--
+//                if ((*o_it)->Connections.size() == i)
+//                {
+//                    ///--
+//                    ///--То находим в основном кольце тот полюс который совпал
+//                    ///--
+//                    for (auto it = PolesRing.begin(); it != PolesRing.end(); ++it)
+//                    {
+//                        if (*it == (*o_it))
+//                        {
+//                            ///--
+//                            ///--и удаляем его
+//                            ///--
+//                            delete *it;
+//                            PolesRing.erase(it);
+//                            OrderedPolesRing.erase(o_it);
+//                            goto EndSearch;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
     if ((int)PolesRing.size() >= int_MaxSizeOfRing)
     {
-        ///--
-        ///--Перебираем число связей по порядку
-        ///--
-        for (int i = 0; true; ++i)
+        if(OrderedPolesRing.size() > 0)
         {
-            ///--
-            ///--Перебираем упорядоченное кольцо
-            ///--и сравниваем с предложенным числом связей
-            ///--
-            for (auto o_it = OrderedPolesRing.begin(); o_it != OrderedPolesRing.end(); ++o_it)
+            Pole * poleToDelete = OrderedPolesRing[0];
+
+            for (auto it = PolesRing.begin(); it != PolesRing.end(); ++it)
             {
-                ///--
-                ///--И если такое количество связей нашлось
-                ///--
-                if ((*o_it)->Connections.size() == i)
-                {
-                    ///--
-                    ///--То находим в основном кольце тот полюс который совпал
-                    ///--
-                    for (auto it = PolesRing.begin(); it != PolesRing.end(); ++it)
-                    {
-                        if (*it == (*o_it))
+                        if (*it == poleToDelete)
                         {
                             ///--
                             ///--и удаляем его
                             ///--
                             delete *it;
                             PolesRing.erase(it);
-                            OrderedPolesRing.erase(o_it);
+                            OrderedPolesRing.erase(OrderedPolesRing.begin());
                             goto EndSearch;
                         }
-                    }
-                }
+
             }
         }
     }
@@ -1181,10 +1219,10 @@ void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isPush, int index)
     EndSearch:
 
     //--
-    //--Проверяем ли полюс в конец кольца
+    //--Проверяем вставлять ли полюс в конец кольца
     //--или вставлять между другими полюсами
     //--
-    if (isPush)
+    if (isToPush)
     {
         PolesRing.push_back(ptr_NewPole);
     }

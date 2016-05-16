@@ -24,10 +24,10 @@ int main()
 
     while (getline(file, s))
     {
-        if (i == -41)
+        if (i == 1472)
         {
             int b = 0;
-            break;
+            //break;
         }
         value_to_push = atof(s.c_str());
 

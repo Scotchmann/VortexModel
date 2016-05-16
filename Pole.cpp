@@ -76,4 +76,18 @@ double Pole::getValue() const
     return d_value;
 }
 
+double Pole::getCumulativeReliability() const
+{
+    double cumulative_reliability = 0;
+    for(auto c_it = Connections.begin(); c_it != Connections.end(); ++c_it)
+    {
+
+            cumulative_reliability = cumulative_reliability + ((Bond*)*c_it)->getReliability();
+
+    }
+    return cumulative_reliability;
+}
+
+
+
 

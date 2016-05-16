@@ -30,9 +30,10 @@ public:
     ///--
     ///--Публичные методы
     ///--
-    bool sortSourceConnections();
-    bool easeAllBonds();
-    double getValue             () const;
+    bool sortSourceConnections      ();
+    bool easeAllBonds               ();
+    double getValue                 () const;
+    double getCumulativeReliability () const;
 
 
 private:
