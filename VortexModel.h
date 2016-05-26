@@ -2,12 +2,16 @@
 #define VORTEXMODEL_LINUX_VORTEXMODEL_H
 
 #include "Vortex.h"
+#include "InertialVector.h"
 #include <GL/glut.h>
 #include <iostream>
 #include <math.h>
 #include <fstream>
+#include <vector>
 
 using namespace std;
+
+typedef vector<InertialVector * > CumulativeVector;
 
 
 
@@ -28,8 +32,8 @@ int GetDistance();
 
 double GetBuf();
 
-void display();
+void DisplayChart();
 
-int DrawChart();
+int DrawChart(CumulativeVector *);
 
 #endif //VORTEXMODEL_LINUX_VORTEXMODEL_H

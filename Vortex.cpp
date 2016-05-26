@@ -41,7 +41,7 @@ Vortex::~Vortex()
 ///--Заведение агента в вихрь
 ///--	d_value 	-	следующее значение
 ///--
-double Vortex::pushAgent(double value)
+double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
 {
 
 
@@ -76,7 +76,7 @@ double Vortex::pushAgent(double value)
         ///--
         ///--Рекурсивно пересчитываем струны в треугольной матрице
         ///--
-        RecalculationOfMainPool(vecSize - 1, 0, &_Agents, 2);
+        RecalculationOfMainPool(vecSize - 1, 0, &_Agents, 2, _cumuVec);
     }
 
     ///--
@@ -90,16 +90,10 @@ double Vortex::pushAgent(double value)
     //}
 
     double fvecsize = 0;
-    fvecsize = (double)CumulativeInertialVector.size();
+    fvecsize = (double)_cumuVec->size();
 
 
-    CheckIfForecastIsEmty:
-    for (auto it = CumulativeInertialVector.begin(); it != CumulativeInertialVector.end(); ++it)
-    {
-        delete *it;
-        CumulativeInertialVector.erase(it);
-        goto CheckIfForecastIsEmty;
-    }
+
 
 
     //return fvecsize;
@@ -122,11 +116,11 @@ double Vortex::getBuf()
 ///--
 int Vortex::getDistance()
 {
-    if (CumulativeInertialVector.size() > 0)
-    {
-        sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
-        return CumulativeInertialVector[0]->getDistance();
-    }
+//    if (_.size() > 0)
+//    {
+//        sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
+//        return CumulativeInertialVector[0]->getDistance();
+//    }
     return 0;
 }
 
@@ -139,7 +133,7 @@ int Vortex::getDistance()
 ///--	ptr_array 	- указатель на треугольную матрицу
 ///--	level		- глубина цикла
 ///--
-void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int level)
+void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int level, CumulativeVector * _cumuVec)
 {
 
     //Agent * ptr_currentInnerAgent = (*ptr_array)[i - 1][j + 1].InnerAgent;
@@ -294,12 +288,16 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                         InertialVector * fcst_denom = PushToDenominatorsRing(Denominator, prev_Denominator);
                     */
 
-
-                    if(fcst != nullptr)
+					//--
+					//--Если инерциальный прогноз сформирован и его значение не равно нулю
+					//--то нормализуем его под текущий уровень в матрице и вкладываем в куммулятивыный
+					//--вектор 
+					//--
+                    if(fcst != nullptr && fcst->getValue() > 0)
                     {
                         fcst->setValue(fcst->getValue() * level);
                         fcst->setDistance(level);
-                        CumulativeInertialVector.push_back(fcst);
+                        _cumuVec->push_back(fcst);
                         (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
                     }
                 }
@@ -310,11 +308,17 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                 {
                     fcst = PushToPolesRing((*ptr_array)[i - 1][j + 1].value / level);
 
-                    if (fcst != nullptr)
+					//--
+					//--Если инерциальный прогноз сформирован и его значение не равно нулю
+					//--то нормализуем его под текущий уровень в матрице и вкладываем в куммулятивыный
+					//--вектор 
+					//--
+                    if (fcst != nullptr && fcst->getValue() > 0)
                     {
                         fcst->setValue(fcst->getValue() * level);
                         fcst->setDistance(level);
-                        CumulativeInertialVector.push_back(fcst);
+						
+                        _cumuVec->push_back(fcst);
                         (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
                     }
                 }
@@ -338,7 +342,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
     ///--
     if (i > 0 && j < int_ArraySize - 1)
     {
-        RecalculationOfMainPool(i - 1, j + 1, ptr_array, level + 1);
+        RecalculationOfMainPool(i - 1, j + 1, ptr_array, level + 1, _cumuVec);
     }
     else
     {
@@ -350,9 +354,9 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 ///--Заводит значение треугольной матрицы в кольцо
 ///--	d_value	- текущее заводимое значение
 ///--
-InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое в кольцо значение
-                                    double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
-)
+InertialVector * Vortex::PushToPolesRing( double value,		// заводимое в кольцо значение
+                                          double prev_value	// предыщущее значение в цикле для которого подходящий полюс уже есть
+                                        )
 {
 
     ///--
@@ -587,8 +591,8 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
                     ///--
                 else
                 {
-                    Answer = ProcessPole(ptr_PoleToWorkWith, value);
-                    ptr_TargetPole = ptr_PoleToWorkWith;
+                    Answer = ProcessPole(ptr_PoleToWorkWith, value);	// формируем ответ
+                    ptr_TargetPole = ptr_PoleToWorkWith;				// Назначаем целевой полюс
                 }
 
                 break;
@@ -628,7 +632,7 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
                     ///--
                 else
                 {
-                    Answer = ProcessPole(PolesRing[i], value);
+                    Answer = ProcessPole(PolesRing[i], value);	// формируем ответ
                     ptr_TargetPole = PolesRing[i];
                 }
 
@@ -727,382 +731,6 @@ InertialVector * Vortex::PushToPolesRing(	double value,		// заводимое �
     return Answer;
 }
 
-InertialVector * Vortex::PushToDenominatorsRing( double denominator,			// заводимый деноминатор в кольцо деноминаторов
-                                           double prev_denominator		// предыдущий деноминатор
-                                         )
-{
-    ///--
-    ///--Переменная для хранения имеющегося prev_value полюса
-    ///--
-    Pole * ptr_SourcePole = nullptr;
-
-
-    ///--
-    ///--Переменная для хранения добавленного полюса (или имеющегося) полюса
-    ///--для последующей привязки в connections для имеющегося prev_value полюса
-    ///--
-    Pole * ptr_TargetPole = nullptr;
-
-    InertialVector * Answer = nullptr;
-
-
-    ///--
-    ///--Сортируем кольцо деноминаторов (DenominatorsRing)
-    ///--
-
-
-    /////////////
-    //         //
-    // 1  ЭТАП //
-    //         //
-    /////////////
-
-    ///--
-    ///--Перебираем кольцо деноминаторов
-    /*                                                       1
-    |                                              28        *        2
-    |                                           27   *               *   3
-    |                                        26   *                     *   4
-    |                                           *    \       |       /    *
-    |                                      25 *                             * 5
-    |                                     24 *                               * 6
-    |                                    23 *               \ /               * 7
-    |                                    22 *    -   -     - + -     -   -    * 8
-    |                                    21 *               / \               * 9
-    |                                     20 *                               * 10
-    |                                      19 *                             * 11
-    |                                        18 *    /       |       \    * 12
-    |                                           17*                     *13
-    |                                             16 *               * 14
-    |                                                        *
-    |                                                        15
-    */
-    ///--
-
-
-    ///--
-    ///--Если кольцо пустое, то добавим сразу полюс в кольцо
-    ///--с текущим значением
-    ///--
-
-    if (DenominatorsRing.size() == 0)
-    {
-        Pole * ptr_NewPole = new Pole(denominator);
-        AddNewPoleToPolesRing(ptr_NewPole, true);
-
-        ptr_TargetPole = ptr_NewPole;	// связываем целевой полюс с новым
-    }
-        ///--
-        ///--Если в кольце есть одно значение
-        ///--то сравниваем это значение со входящим
-        ///--
-    else if (DenominatorsRing.size() == 1)
-    {
-        ///--
-        ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
-        ///--чем на _Step процентов
-        ///--
-        double bias = 0;
-
-        if (denominator > DenominatorsRing[0]->getValue())
-        {
-            bias = 100 - DenominatorsRing[0]->getValue() / (denominator / 100);
-        }
-        else
-        {
-            bias = 100 - denominator / (DenominatorsRing[0]->getValue() / 100);
-        }
-
-        ///--
-        ///--Если больше, то создаем новый полюс в кольце
-        ///--
-        if (bias > int_Step)
-        {
-            Pole * ptr_NewPole = new Pole(denominator);
-
-            ///--
-            ///--Если заводимое значение больше нулевого полюса
-            ///--то:
-            ///--
-            if (denominator > DenominatorsRing[0]->getValue())
-            {
-                //добавляем в конец
-                AddNewPoleToPolesRing(ptr_NewPole, true);
-            }
-                ///--
-                ///--В другом случае
-                ///--
-            else
-            {
-                ///--
-                ///--добавляем в начало
-                ///--тем самым сохраняя упорядоченность кольца по возрастанию
-                ///--
-                AddNewPoleToPolesRing(ptr_NewPole, false, 0);
-            }
-
-            ptr_TargetPole = ptr_NewPole;	// связываем целевой полюс с новым
-        }
-        else
-        {
-            ptr_TargetPole = DenominatorsRing[0];	// связываем целевой полюс с новым
-        }
-
-    }
-        ///--
-        ///--Определяем нужно ли добавить новый полюс или работать с уже существующим
-        ///--Полюса вероятностей создаются с шагом в _Step процентов
-        ///--
-    else if (DenominatorsRing.size() > 1)
-    {
-
-        for (int i = 0; i != DenominatorsRing.size(); ++i)	// Цикл перебора кольца
-        {
-
-            if (denominator == DenominatorsRing[i]->getValue())
-            {
-                Answer = ProcessPole(DenominatorsRing[i], denominator);	// формируем ответ
-                ptr_TargetPole = DenominatorsRing[i];				// связываем целевой полюс с новым
-                break;
-            }
-
-            else if (i == 0 && denominator > DenominatorsRing[i]->getValue())
-            {
-                continue;
-            }
-                ///--
-                ///--Если мы находимся в начале перебора кольца и
-                ///--значение уже меньше текущего и предыдущего полюсов
-                ///--то выясняем нужно ли добавлять в начало новый полюс
-                ///--или работать с первым
-                ///--
-            else if ((i == 0 && denominator < DenominatorsRing[i]->getValue()) || (i == 1 && denominator < DenominatorsRing[i]->getValue() && denominator < DenominatorsRing[i - 1]->getValue()))
-            {
-
-                ///--
-                ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
-                ///--чем на _Step процентов
-                ///--
-                double bias = 0;
-
-                bias = 100 - denominator / (DenominatorsRing[0]->getValue() / 100);
-
-                ///--
-                ///--Если больше, то создаем новый полюс в кольце
-                ///--
-                if (bias > int_Step)
-                {
-                    Pole * ptr_NewPole = new Pole(denominator);
-                    AddNewPoleToPolesRing(ptr_NewPole, false, 0);
-
-                    ptr_TargetPole = ptr_NewPole;				// связываем целевой полюс с новым
-                }
-                    ///--
-                    ///--В противном случае работаем с имеющимся полюсом
-                    ///--
-                else
-                {
-                    Answer = ProcessPole(DenominatorsRing[0], denominator);	// формируем ответ
-                    ptr_TargetPole = DenominatorsRing[0];				// связываем целевой полюс с новым
-                }
-                break;
-            }
-                ///--
-                ///--Если заводимое значение меньше текущего перебираемого полюса и больше предыдущего
-                ///--перебранного полюса, то пытаемся втиснуть заводимое значение между ними.
-                ///--
-            else if (i > 0 && denominator < DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
-            {
-                ///--
-                ///--Для этого:
-                ///--	из текущего перебираемого полюса вычитаем заводимое значение
-                ///--	из заводимого значения вычитаем предыдущий перебранный полюс
-                ///--
-                double a = DenominatorsRing[i]->getValue() - denominator;		// разность между текущим перебираемым полюсом и заводимым значением
-                double b = denominator - DenominatorsRing[i - 1]->getValue();	// разность между заводимым значением и предыдущим перебранным
-                double bias = 0;								// переменная для хранения смещения в процентах
-                Pole * ptr_PoleToWorkWith = nullptr;			// переменная для записи рабочего полюса
-
-                ///--
-                ///--Затем вычисляем смещение в процентах относительно наименьшей разности
-                ///--Для этого оцениваем какая из разностей меньше
-                ///--Если разница текущего полюса меньше, берем за его 100 процентов
-                ///--Если меньше разница предыдущего полюса, берем вводимое значение за 100 процентов
-                ///--Затем вычисляем смещение в процентах между полюсом и вводимым значением
-                ///--
-                if (a < b)
-                {
-                    bias = 100 - denominator / (DenominatorsRing[i]->getValue() / 100);
-                    ptr_PoleToWorkWith = DenominatorsRing[i];						// Назначаем рабочий полюс
-                }
-                else
-                {
-                    bias = 100 - DenominatorsRing[i - 1]->getValue() / (denominator / 100);
-                    ptr_PoleToWorkWith = DenominatorsRing[i - 1];					// --
-                }
-
-                ///--
-                ///--Если это смещение больше _Step процентов, тогда создаем новый полюс
-                ///--
-                if (bias > int_Step)
-                {
-                    Pole * ptr_NewPole = new Pole(denominator);
-
-                    ///--
-                    ///--Вставляем новый полюс между двумя перебираемыми полюсами
-                    ///--
-                    AddNewPoleToPolesRing(ptr_NewPole, false, i);
-
-                    ptr_TargetPole = ptr_NewPole;	// связываем целевой полюс с новым
-
-                }
-                    ///--
-                    ///--Если смещение меньше _Step процентов, тогда считаем рабочий полюс
-                    ///--Пересчитываем значения и связи
-                    ///--
-                else
-                {
-                    Answer = ProcessPole(ptr_PoleToWorkWith, denominator);
-                    ptr_TargetPole = ptr_PoleToWorkWith;
-                }
-
-                break;
-            }
-
-            else if (i > 0 && (i < DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
-            {
-                continue;
-            }
-                ///--
-                ///--Если же перешли к конечному полюсу
-                ///--и заводимое значение всё ещё больше текущего перебираемого полюса
-                ///--и предыдущего перебранного полюса
-                ///--то:
-                ///--
-            else if ((i == DenominatorsRing.size() - 1) && denominator > DenominatorsRing[i]->getValue() && denominator > DenominatorsRing[i - 1]->getValue())
-            {
-                ///--
-                ///--Выясняем больше ли вводимое значение текущего перебираемого полюса
-                ///--чем на _Step процентов
-                ///--
-                double bias = 0;
-                bias = 100 - DenominatorsRing[i]->getValue() / (denominator / 100);
-
-                ///--
-                ///--Если больше, то создаем новый полюс в кольце
-                ///--
-                if (bias > int_Step)
-                {
-                    Pole * ptr_NewPole = new Pole(denominator);
-                    AddNewPoleToPolesRing(ptr_NewPole, true, i);
-
-                    ptr_TargetPole = ptr_NewPole;
-                }
-                    ///--
-                    ///--Если меньше, то работаем с текущим перебираемым полюсом
-                    ///--
-                else
-                {
-                    Answer = ProcessPole(DenominatorsRing[i], denominator);
-                    ptr_TargetPole = DenominatorsRing[i];
-                }
-
-                break;
-            }
-                ///--
-                ///--Отладочная ветвь
-                ///--
-            else
-            {
-                int check = 0;
-            }
-        }
-    }
-
-    /////////////
-    //         //
-    // 2  ЭТАП //
-    //         //
-    /////////////
-
-    ///--
-    ///--Если передано предыдущее значение (не равно нулю)
-    ///--то найдем полюс, соотвествующий предыдущему значению
-    ///--
-
-    if(prev_denominator != 0)
-    {
-        for (int i = 0; i != DenominatorsRing.size(); ++i)
-        {
-            double d_max = max(prev_denominator, DenominatorsRing[i]->getValue());	// максимальное значение
-            double d_min = min(prev_denominator, DenominatorsRing[i]->getValue());	// минимальное значение
-            double bias = 100 - d_min / (d_max / 100);				// смещение в процентах между максимальным
-            // и минимальным значением относительно максимального
-            if(bias < int_Step)
-            {
-                ///--
-                ///--Если смещение менее _Step процентов значит
-                ///--полюс найден
-                ///--
-                ptr_SourcePole = DenominatorsRing[i];	// найденный полюс
-
-                ///--
-                ///--Далее перебираем связи в найденном полюсе
-                ///--и если в связях мы обнаружили связь которая
-                ///--указывает на текущее переданное значение
-                ///--то укрепляем её
-                ///--если нет - создаем новую связь
-                ///--
-
-                int _ConnectionsSize = (int)(DenominatorsRing[i]->Connections.size());	// количество связей
-                bool IsBondFound = false;										// флаг для записи признака найдена ли связь
-
-                ///--
-                ///--Цикл перебора связей
-                ///--
-                for (int j = 0; j != _ConnectionsSize; ++j)
-                {
-                    ///--
-                    ///--Если указатели соотвествуют
-                    ///--то укрепляем связь
-                    ///--
-                    if (ptr_SourcePole->Connections[j]->getTargetPole() == ptr_TargetPole)
-                    {
-                        IsBondFound = true;								// взводим флаг, так как связь найдена
-                        ptr_SourcePole->Connections[j]->Strengthen(); 	// укрепляем связь
-                    }
-                }
-
-                ///--
-                ///--Если связь не найдена
-                ///--Создадим новую
-                ///--
-                if (!IsBondFound)
-                {
-                    Bond * NewBond = new Bond(ptr_SourcePole, ptr_TargetPole, d_Easing_ratio);	// новая связь
-                    ptr_SourcePole->Connections.push_back(NewBond);								// заводим связь
-
-                    ///--
-                    ///--После добавления сортируем связи в полюсе
-                    ///--
-                    ptr_SourcePole->sortSourceConnections();
-                }
-            }
-        }
-    }
-
-    ///--
-    ///--Ослабляем все связи
-    ///--
-    for (int i = 0; i != DenominatorsRing.size(); ++i)
-    {
-        DenominatorsRing[i]->easeAllBonds();
-    }
-
-    return Answer;
-}
-
-
 ///--
 ///--Возвращает вектор инерции по полюсу
 ///--
@@ -1136,61 +764,10 @@ InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
 void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isToPush, int index)
 {
 
-
+    ///--
+    ///--Сортируем референсное кольцо по куммулятивной силе
+    ///--
     sort(OrderedPolesRing.begin(), OrderedPolesRing.end(), PoleComparatorObject);
-
-    for(auto Ord_It = OrderedPolesRing.begin(); Ord_It != OrderedPolesRing.end(); ++Ord_It)
-    {
-        double t = 0;
-        t = (*Ord_It)->getCumulativeReliability();
-        if(t!=0)
-        {
-            t = t;
-        }
-    }
-
-//    ///--
-//    ///--Если мы превысили максимальный размер кольца
-//    ///--то удаляем самый старый полюс с, по возможности, наименьшим количеством связей
-//    ///--
-//    if ((int)PolesRing.size() >= int_MaxSizeOfRing)
-//    {
-//        ///--
-//        ///--Перебираем число связей по порядку
-//        ///--
-//        for (int i = 0; true; ++i)
-//        {
-//            ///--
-//            ///--Перебираем упорядоченное кольцо
-//            ///--и сравниваем с предложенным числом связей
-//            ///--
-//            for (auto o_it = OrderedPolesRing.begin(); o_it != OrderedPolesRing.end(); ++o_it)
-//            {
-//                ///--
-//                ///--И если такое количество связей нашлось
-//                ///--
-//                if ((*o_it)->Connections.size() == i)
-//                {
-//                    ///--
-//                    ///--То находим в основном кольце тот полюс который совпал
-//                    ///--
-//                    for (auto it = PolesRing.begin(); it != PolesRing.end(); ++it)
-//                    {
-//                        if (*it == (*o_it))
-//                        {
-//                            ///--
-//                            ///--и удаляем его
-//                            ///--
-//                            delete *it;
-//                            PolesRing.erase(it);
-//                            OrderedPolesRing.erase(o_it);
-//                            goto EndSearch;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
 
 
     if ((int)PolesRing.size() >= int_MaxSizeOfRing)
@@ -1201,16 +778,16 @@ void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isToPush, int index)
 
             for (auto it = PolesRing.begin(); it != PolesRing.end(); ++it)
             {
-                        if (*it == poleToDelete)
-                        {
-                            ///--
-                            ///--и удаляем его
-                            ///--
-                            delete *it;
-                            PolesRing.erase(it);
-                            OrderedPolesRing.erase(OrderedPolesRing.begin());
-                            goto EndSearch;
-                        }
+                if (*it == poleToDelete)
+                {
+                    ///--
+                    ///--и удаляем его
+                    ///--
+                    delete *it;
+                    PolesRing.erase(it);
+                    OrderedPolesRing.erase(OrderedPolesRing.begin());
+                    goto EndSearch;
+                }
 
             }
         }

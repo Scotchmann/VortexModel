@@ -4,7 +4,7 @@ project(VortexModel_linux)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -I/usr/include/root" )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 
-set(SOURCE_FILES main.cpp Vortex.cpp Vortex.h VortexModel.cpp VortexModel.h Agent.cpp Agent.h Bond.cpp Bond.h Pole.cpp Pole.h InertialVector.cpp InertialVector.h)
+set(SOURCE_FILES main.cpp Vortex.cpp Vortex.h VortexModel.cpp VortexModel.h Agent.cpp Agent.h Bond.cpp Bond.h Pole.cpp Pole.h InertialVector.cpp InertialVector.h )
 add_executable(VortexModel_linux ${SOURCE_FILES})
 #list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 #set(ROOT_DIR /usr/include/root/)

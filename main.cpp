@@ -14,7 +14,8 @@ int main()
     double value_to_push = 0;
 
     string s;                                                       // сюда будем ложить считанные строки
-    ifstream file("/home/vortex/ClionProjects/ProcessData.txt");    // файл из которого читаем (для линукс путь будет выглядеть по другому)
+    ifstream file("/home/vortex/ClionProjects/ProcessData.txt");    // файл из которого читаем
+
 
     InitializeVortex();
     int i;
@@ -24,7 +25,7 @@ int main()
 
     while (getline(file, s))
     {
-        if (i == 1472)
+        if (i == 9998)
         {
             int b = 0;
             //break;
