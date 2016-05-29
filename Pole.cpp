@@ -78,13 +78,16 @@ double Pole::getValue() const
 
 double Pole::getCumulativeReliability() const
 {
-    double cumulative_reliability = 0;
-    for(auto c_it = Connections.begin(); c_it != Connections.end(); ++c_it)
+    double cumulative_reliability = 0;	// Куммулятивная надежность полюса
+    
+	///--
+	///--Собираем куммулятивную надежность
+	///--
+	for(auto c_it = Connections.begin(); c_it != Connections.end(); ++c_it)
     {
-
-            cumulative_reliability = cumulative_reliability + ((Bond*)*c_it)->getReliability();
-
+        cumulative_reliability = cumulative_reliability + ((Bond*)*c_it)->getReliability();
     }
+	
     return cumulative_reliability;
 }
 

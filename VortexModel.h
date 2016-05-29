@@ -25,7 +25,9 @@ void InitializeVortex();
 ///--
 double pushAgent(double value, bool Up);
 
-
+///--
+///--Получает значение агента
+///--
 double getAgent(int i, int j, bool Up);
 
 int GetDistance();

@@ -22,40 +22,41 @@ typedef vector< Vortex* > VortexArray;			// Алиас для массива в�
 
 class Vortex
 {
+
 public:
-    Vortex	();
-    Vortex	(int ArraySize = 0, int Generation = 0, double Step = 0.00006, int MaxSizeOfRing = 5000, double EasingRatio = 0.001);
+    
+	Vortex	();
+    Vortex	(int ArraySize = 0, int Generation = 0, double Step = 0.00006, int MaxSizeOfRing = 5000, double EasingRatio = 0.0001);
     ~Vortex	();
     double 	pushAgent		(double, CumulativeVector *);   // Заведение значения в матрицу
     double 	getAgent        (int i, int j);			        // Получение поколения агента
     void 	setGeneration   (int);					        // Установка поколения агента
     double  getBuf          ();
-    int		getDistance();
+    int		getDistance		();
 
-    AgentsArray 	_Agents;			// Агенты матрицы
+    AgentsArray 	_Agents;								// Агенты матрицы
 
 private:
 
-    //VortexArray 	_Vortexes;			//
-    int 			int_ArraySize;		// Размер матрицы
-    int 			int_Generation;		// Поколение
-    double 			int_Step;			// Шаг между полюсами кольца
-    double 			d_Easing_ratio;		// Коэффициент ослабления связи
-    int				int_MaxSizeOfRing;	// Максимальный размер кольца
-    double			d_distributionStep;	// Шаг распределения укрепления между полюсами
+    int 			int_ArraySize;							// Размер матрицы
+    int 			int_Generation;							// Поколение
+    double 			int_Step;								// Шаг между полюсами кольца
+    double 			d_Easing_ratio;							// Коэффициент ослабления связи
+    int				int_MaxSizeOfRing;						// Максимальный размер кольца
+    double			d_distributionStep;						// Шаг распределения укрепления между полюсами
 
-    vector<Pole	*> 	PolesRing;			// Кольцо полюсов
-    vector<Pole *>	DenominatorsRing;	// Кольцо деноминаторов
-    vector<Pole *>  OrderedPolesRing;	// Упорядоченное кольцо полюсов
+    vector<Pole	*> 	PolesRing;								// Кольцо полюсов
+    vector<Pole *>	DenominatorsRing;						// Кольцо деноминаторов
+    vector<Pole *>  OrderedPolesRing;						// Упорядоченное кольцо полюсов
 
-    //vector<InertialVector*> CumulativeInertialVector;   // Куммулятивная инерция по диагонали
+    //vector<InertialVector*> CumulativeInertialVector;   	// Куммулятивная инерция по диагонали
 
 
     void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int, CumulativeVector *);	// Пересчет основного пула треугольной матрицы
     InertialVector *	PushToPolesRing				(double value, double prev_value = 0);		        // Заведение значения в кольцо
     InertialVector *	PushToDenominatorsRing		(double value, double prev_value = 0);		        // Заведение деноминатора в кольцо деноминаторов
     InertialVector *	ProcessPole					(Pole * _pole, double value); 				        // Обработка полюса
-    void		AddNewPoleToPolesRing		(Pole * _pole, bool isToPush, int index = 0);	            // Заведение нового полюса в кольцо
+    void				AddNewPoleToPolesRing		(Pole * _pole, bool isToPush, int index = 0);	    // Заведение нового полюса в кольцо
 
     ///--
     ///--Компаратор полюсов

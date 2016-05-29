@@ -9,11 +9,12 @@ Vortex * ptr_DownVortex;
 
 const int 	ArraySize 	= 130;	// Размер массива
 int 		counter 	= 1;	// Счетчик
-
 int 		_count 		= 0;    // Размер масива У,Х
 float* 		X;           		// масив для хранение х-ов
 float* 		Y;           		// масив для хранения у-ов
+
 double      d_maximal_reliability = 0; // максимальная надежность
+
 
 CumulativeVector _CumulativeContainer;
 
@@ -32,15 +33,13 @@ void InitializeVortex()
     char ** argv = nullptr;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(800, 800);
+    glutInitWindowSize(1600, 800);
     glutInitWindowPosition(20, 810);
     glutCreateWindow("Chart");
-    //glClearColor(0.53, 0.97, 0.57, 0);
     glClearColor(0.0, 0.0, 0.0, 0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-3, 100, -3, 100, -100, 100);
-
+    glOrtho(-2, 100.5, -2, 100, -100, 100);
 
 }
 
@@ -50,21 +49,21 @@ void InitializeVortex()
 double pushAgent(double value, bool Up)
 {
 
-
-
     CheckIfForecastIsEmty:
+	
     for (auto it = _CumulativeContainer.begin(); it != _CumulativeContainer.end(); ++it)
     {
         delete *it;
         _CumulativeContainer.erase(it);
         goto CheckIfForecastIsEmty;
     }
+	
+	
 
     if(_CumulativeContainer.size() > 0)
     {
         _CumulativeContainer.clear();
     }
-
 
 
 
@@ -93,11 +92,16 @@ int DrawChart(CumulativeVector * _CumuCon)
 	//--
 	for(int i = 0; i < _CumuCon->size()-1 && _CumuCon->size() > 0; ++i)
     {
-		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0 && ((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
+		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
-			arrY.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getDistance()/3);
-			arrX.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getReliability());
-            if(((CumulativeVector)(*_CumuCon))[i]->getReliability() > d_maximal_reliability)
+			
+			arrY.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
+			arrX.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
+            
+			///--
+			///--Получаем максимальную надежность за проход
+			///--
+			if(((CumulativeVector)(*_CumuCon))[i]->getReliability() > d_maximal_reliability)
             {
                 d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getReliability();
             }
@@ -112,7 +116,7 @@ int DrawChart(CumulativeVector * _CumuCon)
     for(int j = 0; j < arrX.size(); j++)
     {
 		///--
-        ///--диапазона в массив Х
+        ///--Запись диапазона в массив Х
 		///--
         X[j] = arrX[j];
     }
@@ -120,17 +124,22 @@ int DrawChart(CumulativeVector * _CumuCon)
     for(int j = 0; j < arrY.size(); j++)
     {
 		///--
-        ///--диапазона в массив Y
+        ///--Запрсь диапазона в массив Y
 		///--
         Y[j] = arrY[j];
     }
 
     _count = (int)arrX.size();
     glutDisplayFunc(DisplayChart);
+	
+	///--
+	///--Отрисовываем график на экране
+	///--
     DisplayChart();
 
-    //    glutMainLoop();
-
+    
+	//    glutMainLoop();
+	
     delete [] X;
     delete [] Y;
 }
@@ -149,10 +158,15 @@ void DisplayChart()
 	///--
 	///--Рисование системы координат
     ///--
-	glVertex3f(0, 100, 0);		
+	glVertex3f(0, 100, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
+
+//    glVertex3f(50, 100, 0);
+//    glVertex3f(50, 0, 0);
+
+
 
     for(int i = -10; i < 20; i++)
 	{
@@ -168,6 +182,22 @@ void DisplayChart()
 	
     glEnd();
 
+
+    glLineWidth(0.01);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_LINE_STIPPLE); // разрешаем рисовать
+    // прерывистую линию
+    glLineStipple(2,6);    // устанавливаем маску
+    // пояснения см. ниже
+    glBegin(GL_LINE_LOOP);
+    glColor3d(0,0,1);
+        glVertex3f(50, 100, 0);
+        glVertex3f(50, 0, 0);
+    glEnd();
+
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_LINE_STIPPLE);
+
     ///--
 	///-- Рисование точек графика функции
 	///--
@@ -177,8 +207,20 @@ void DisplayChart()
     
 	float y;
     
+	///--
+	///--Отрисовываем куммулятивный вектор
+	///--
 	for(int i = 0; i < _count; i++)
     {
+        if(X[i] > 50)
+        {
+            glColor3f(0.0, 1.0, 0.0);
+        }
+        else
+        {
+            glColor3f(1.0, 0.0, 0.0);
+        }
+
         glVertex3f(X[i], Y[i], 0);
     }
     
@@ -188,6 +230,7 @@ void DisplayChart()
 
 double getAgent(int i, int j, bool Up)
 {
+	
     double size = 0;
 
     //Up ? size = AgentsUpTrend[i][j].InnerAgent->mutation_percentage : size = AgentsDownTrend[i][j].InnerAgent->mutation_percentage;
@@ -195,22 +238,29 @@ double getAgent(int i, int j, bool Up)
     size = ptr_UpVortex->getAgent(i, j);
 
     return size;
+	
 }
 
 int GetDistance()
 {
+	
     int i = 0;
+	
     i = ptr_UpVortex->getDistance();
 
     return i;
+	
 }
 
 double GetBuf()
 {
+	
     double i = 0;
+	
     i = ptr_UpVortex->getBuf();
 
     return i;
+	
 }
 
 

@@ -83,17 +83,9 @@ double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
     ///--Возращаем размер массива
     ///--
 
-    //if (CumulativeInertialVector.size() > 0)
-    //{
-    //	//sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
-    //	return CumulativeInertialVector[0].d_value;
-    //}
 
     double fvecsize = 0;
     fvecsize = (double)_cumuVec->size();
-
-
-
 
 
     //return fvecsize;
@@ -116,11 +108,6 @@ double Vortex::getBuf()
 ///--
 int Vortex::getDistance()
 {
-//    if (_.size() > 0)
-//    {
-//        sort(CumulativeInertialVector.begin(), CumulativeInertialVector.end(), ForecastComparatorObject);
-//        return CumulativeInertialVector[0]->getDistance();
-//    }
     return 0;
 }
 
@@ -135,8 +122,6 @@ int Vortex::getDistance()
 ///--
 void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int level, CumulativeVector * _cumuVec)
 {
-
-    //Agent * ptr_currentInnerAgent = (*ptr_array)[i - 1][j + 1].InnerAgent;
 
     InertialVector * fcst = new InertialVector();
 
@@ -241,52 +226,23 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                 ///--
                 if (i - 1 >= level )
                 {
-                    //if ((*ptr_array)[i - 1 - level][j + 1].ReceivedForecast > 0)
-                    //{
-                    //	fcst =	PushToPolesRing (	(	(
-                    //										(*ptr_array)[i - 1][j + 1].d_value +	(*ptr_array)[i - 1 - level][j + 1].ReceivedForecast
-                    //									) / 2															// получаем среднее арифметическое между фактическим и спрогнозированным значением
-                    //								) / level,															// текущее значение по циклу
-                    //									(*ptr_array)[i - 1 - level][j + 1].d_value / level				// предыдущее значение по циклу
-                    //							);
-                    //}
-                    //else
-                    //{
+                
+//                    fcst =	PushToPolesRing(
+//												(*ptr_array)[i - 1][j + 1].value / level,				// текущее значение по циклу
+//												(*ptr_array)[i - 1 - level][j + 1].value / level		// предыдущее значение по циклу
+//											);
+
+                    ///--
+                    ///--Процентный переход
+                    ///--
+
+                    (*ptr_array)[i - 1][j + 1].previous_differential = ((*ptr_array)[i - 1][j + 1].value / level)/ ((*ptr_array)[i - 1 - level][j + 1].value / level);
+
                     fcst =	PushToPolesRing(
-                            (*ptr_array)[i - 1][j + 1].value / level,				// текущее значение по циклу
-                            (*ptr_array)[i - 1 - level][j + 1].value / level		// предыдущее значение по циклу
+                            ((*ptr_array)[i - 1][j + 1].value / level)/ ((*ptr_array)[i - 1 - level][j + 1].value / level),				// текущее значение по циклу
+                            (*ptr_array)[i - 1 - level][j + 1].previous_differential		// предыдущее значение по циклу
                     );
-                    //}
-
-
-                    //--
-                    //--Формируем и заводим деноминатор в кольцо деноминаторов
-                    //--
-
-                    /*
-
-                    				A
-
-
-
-
-                    		B				C
-                    	  (i-1)			   (i)
-
-                    */
-
-                    //--	Denominator = (A-B)/(A-C)
-
-                    /*
-                        double Denominator     	= 	((*ptr_array)[i - 1][j + 1].d_value - (*ptr_array)[i][j - 1].d_value)
-                                                 /	((*ptr_array)[i - 1][j + 1].d_value - (*ptr_array)[i][j].d_value);
-
-                        double prev_Denominator	= 	((*ptr_array)[i - 1 - level][j + 1].d_value - (*ptr_array)[i - level][j - 1].d_value)
-                                                 /	((*ptr_array)[i - 1 - level][j + 1].d_value - (*ptr_array)[i - level][j].d_value);
-
-
-                        InertialVector * fcst_denom = PushToDenominatorsRing(Denominator, prev_Denominator);
-                    */
+                
 
 					//--
 					//--Если инерциальный прогноз сформирован и его значение не равно нулю
@@ -362,22 +318,17 @@ InertialVector * Vortex::PushToPolesRing( double value,		// заводимое �
     ///--
     ///--Переменная для хранения имеющегося prev_value полюса
     ///--
-    Pole * ptr_SourcePole = nullptr;
+    Pole * ptr_SourcePole	= nullptr;
 
 
     ///--
     ///--Переменная для хранения добавленного полюса (или имеющегося) полюса
     ///--для последующей привязки в connections для имеющегося prev_value полюса
     ///--
-    Pole * ptr_TargetPole = nullptr;
+    Pole * ptr_TargetPole	= nullptr;
 
-    InertialVector * Answer = nullptr;
+    InertialVector * Answer	= nullptr;
 
-
-    ///--
-    ///--Сортируем кольцо полюсов (PolesRing)
-    ///--
-    //sort(PolesRing.begin(), PolesRing.end(), PoleComparatorObject);
 
 
     /////////////
@@ -388,26 +339,26 @@ InertialVector * Vortex::PushToPolesRing( double value,		// заводимое �
 
     ///--
     ///--Перебираем кольцо полюсов
-    /*                                                       1
-    |                                              28        *        2
-    |                                           27   *               *   3
-    |                                        26   *                     *   4
-    |                                           *    \       |       /    *
-    |                                      25 *                             * 5
-    |                                     24 *                               * 6
-    |                                    23 *               \ /               * 7
-    |                                    22 *    -   -     - + -     -   -    * 8
-    |                                    21 *               / \               * 9
-    |                                     20 *                               * 10
-    |                                      19 *                             * 11
-    |                                        18 *    /       |       \    * 12
-    |                                           17*                     *13
-    |                                             16 *               * 14
-    |                                                        *
-    |                                                        15
+    /* 
+															1
+                                                  28        *        2
+                                               27   *               *   3
+                                            26   *                     *   4
+                                               *    \       |       /    *
+                                          25 *                             * 5
+                                         24 *                               * 6
+                                        23 *               \ /               * 7
+                                        22 *    -   -     - + -     -   -    * 8
+                                        21 *               / \               * 9
+                                         20 *                               * 10
+                                          19 *                             * 11
+                                            18 *    /       |       \    * 12
+                                               17*                     *13
+                                                 16 *               * 14
+                                                            *
+                                                            15
     */
-    ///--
-
+    
 
     ///--
     ///--Если кольцо пустое, то добавим сразу полюс в кольцо
@@ -751,9 +702,16 @@ InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
     if (_pole->Connections.size() > 0)
     {
         answer->setValue(_pole->Connections[0]->getTargetPole()->getValue());
-        answer->setReliability(_pole->Connections[0]->getReliability());
+		
+		double cumultaliveTotal = _pole->getCumulativeReliability();
+		double strongestReliability = _pole->Connections[0]->getReliability();
+		
+		if(cumultaliveTotal > 0)
+		{
+			double _reliability = strongestReliability/cumultaliveTotal*100;
+			answer->setReliability(_reliability);
+		}  
     }
-
 
     ///--
     ///--Если у полюса нет связей возвращаем вектор инерции с нулями
@@ -788,7 +746,6 @@ void Vortex::AddNewPoleToPolesRing(Pole * ptr_NewPole, bool isToPush, int index)
                     OrderedPolesRing.erase(OrderedPolesRing.begin());
                     goto EndSearch;
                 }
-
             }
         }
     }

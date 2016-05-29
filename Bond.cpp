@@ -47,15 +47,11 @@ bool Bond::Strengthen(double Step)
 ///--
 bool Bond::Ease()
 {
+
     d_reliability = d_reliability - ((double)d_strengthen_Step * d_easing_Ratio);
 
-    //if (d_reliability < 0 || d_reliability == 0)
-    //{
-    //	d_reliability = 0;
-    //	return true;
-    //}
-
     return false;
+
 }
 
 double Bond::getReliability() const

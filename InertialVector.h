@@ -8,8 +8,13 @@
 
 class InertialVector
 {
+
 public:
 
+	///--
+	///--Публичные методы
+	///--
+	
     double  getValue() const;
     void    setValue(double value);
 
@@ -21,6 +26,10 @@ public:
 
 private:
 
+	///--
+	///--Приватные поля
+	///--
+	
     double  d_value;        // Значение инерции
     double  d_reliability;  // Надежность инерции
     int     i_distance;	    // Дистанция инерции
