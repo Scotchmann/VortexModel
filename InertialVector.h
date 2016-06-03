@@ -15,14 +15,14 @@ public:
 	///--Публичные методы
 	///--
 	
-    double  getValue() const;
-    void    setValue(double value);
+    double  getValue		() const;
+    void    setValue		(double value);
 
-    double  getReliability() const;
-    void    setReliability(double reliability);
+    double  getReliability	() const;
+    void    setReliability	(double reliability);
 
-    int     getDistance() const;
-    void    setDistance(int distance);
+    int     getDistance		() const;
+    void    setDistance		(int distance);
 
 private:
 
