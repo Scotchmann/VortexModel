@@ -17,7 +17,7 @@ public:
     ///--
 	
     Bond	();
-    Bond	(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step = 1);
+    Bond	(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step = 1.1);
 
     
 	///--

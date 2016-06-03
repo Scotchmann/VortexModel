@@ -7,7 +7,7 @@ using namespace std;
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-const int 	ArraySize 	= 130;	// Размер массива
+const int 	ArraySize 	= 300;	// Размер массива
 int 		counter 	= 1;	// Счетчик
 int 		_count 		= 0;    // Размер масива У,Х
 float* 		X;           		// масив для хранение х-ов
@@ -39,7 +39,7 @@ void InitializeVortex()
     glClearColor(0.0, 0.0, 0.0, 0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-2, 100.5, -2, 100, -100, 100);
+    glOrtho(-2, 100.5, -2, ArraySize/2 + 0.5, -100, 100);
 
 }
 
@@ -95,15 +95,15 @@ int DrawChart(CumulativeVector * _CumuCon)
 		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
 			
-			arrY.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
-			arrX.push_back((int)((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
+			arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );				// Формируем уровни треугольной матрицы на графике
+			arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
             
 			///--
 			///--Получаем максимальную надежность за проход
 			///--
-			if(((CumulativeVector)(*_CumuCon))[i]->getReliability() > d_maximal_reliability)
+			if(((CumulativeVector)(*_CumuCon))[i]->getDistance() > d_maximal_reliability)
             {
-                d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getReliability();
+                d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getDistance();
             }
 		}
     }
@@ -158,7 +158,7 @@ void DisplayChart()
 	///--
 	///--Рисование системы координат
     ///--
-	glVertex3f(0, 100, 0);
+	glVertex3f(0, ArraySize/2, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
@@ -174,7 +174,7 @@ void DisplayChart()
         glVertex3f(10 + i * 5, 0.5, 0);
     }
 
-    for(int i = -10; i < 20; i++)
+    for(int i = -10; i < ArraySize/5; i++)
 	{
         glVertex3f(-0.5, 10 + i * 5 , 0);
         glVertex3f(0.5, 10 + i * 5 , 0);
@@ -191,7 +191,7 @@ void DisplayChart()
     // пояснения см. ниже
     glBegin(GL_LINE_LOOP);
     glColor3d(0,0,1);
-        glVertex3f(50, 100, 0);
+        glVertex3f(50, 300, 0);
         glVertex3f(50, 0, 0);
     glEnd();
 
@@ -230,7 +230,6 @@ void DisplayChart()
 
 double getAgent(int i, int j, bool Up)
 {
-	
     double size = 0;
 
     //Up ? size = AgentsUpTrend[i][j].InnerAgent->mutation_percentage : size = AgentsDownTrend[i][j].InnerAgent->mutation_percentage;
@@ -238,7 +237,6 @@ double getAgent(int i, int j, bool Up)
     size = ptr_UpVortex->getAgent(i, j);
 
     return size;
-	
 }
 
 int GetDistance()
