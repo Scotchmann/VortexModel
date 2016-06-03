@@ -1,5 +1,5 @@
 // ConsoleApplication1.cpp : Defines the entry point for the console application.
-// master branch
+// DiagonalSearch branch
 
 #include "VortexModel.h"
 
@@ -71,7 +71,7 @@ int ProcessChars()
         if (i_counter == 9998)				
         {										
             int b = 0;						 
-            //break; //
+            //break;
         }
 
         const char * cstr = s.c_str();									// получаем строку в стиле C 
