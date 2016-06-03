@@ -40,7 +40,6 @@ public:
 	
     double 	pushAgent		(double, CumulativeVector *);   // Заведение значения в матрицу
     double 	getAgent        (int i, int j);			        // Получение поколения агента
-    void 	setGeneration   (int);					        // Установка поколения агента
     double  getBuf          ();
     int		getDistance		();
 
@@ -49,21 +48,17 @@ public:
 private:
 
     int 		int_ArraySize;							// Размер матрицы
-    int 		int_Generation;							// Поколение
     double		int_Step;								// Шаг между полюсами кольца
     double 		d_Easing_ratio;							// Коэффициент ослабления связи
     int			int_MaxSizeOfRing;						// Максимальный размер кольца
-    double		d_distributionStep;						// Шаг распределения укрепления между полюсами
     double		d_strengthen_step;                      // Шаг укрепления связи
 
     vector< vector<Pole *> > 	PolesRingsStack;        // Стопка колец
-    vector<Pole *>				DenominatorsRing;		// Кольцо деноминаторов
     vector<Pole *>  			OrderedPolesRing;		// Упорядоченное кольцо полюсов
 
 	
     void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int, CumulativeVector *);			// Пересчет основного пула треугольной матрицы
     InertialVector *	PushToPolesRing				(int level, double value, double prev_value = 0);			// Заведение значения в кольцо
-    InertialVector *	PushToDenominatorsRing		(double value, double prev_value = 0);						// Заведение деноминатора в кольцо деноминаторов
     InertialVector *	ProcessPole					(Pole * _pole, double value);								// Обработка полюса
     void				AddNewPoleToPolesRing		(int level, Pole * _pole, bool isToPush, int index = 0);	// Заведение нового полюса в кольцо
 

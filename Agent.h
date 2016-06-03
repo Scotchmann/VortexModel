@@ -26,15 +26,28 @@ public:
 	///--
 	///--Публичные поля
 	///--
-	
-    double value;					//
-    double differential;			//
-    double previous_differential;	//
+
+    double getValue() const;
+
+    void setValue(double value);
+
+    double getDifferential() const;
+
+    void setDifferential(double differential);
+
+    double getReceivedForecast() const;
+
+    void setReceivedForecast(double ReceivedForecast);
+
+
+private:
+
+    double d_value;					//
+    double d_differential;
+    //double previous_differential;	//
     double reliability;				//
     Agent * InnerAgent;				//
     double ReceivedForecast;		//
-
-private:
 
 };
 

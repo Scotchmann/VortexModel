@@ -7,8 +7,6 @@ using namespace std;
 Vortex::Vortex()
 {
     int_ArraySize = 0;
-    int_Generation = 0;
-    //_Vortexes = VortexArray(300);
 }
 
 ///--
@@ -23,7 +21,6 @@ Vortex::Vortex(int ArraySize, int Generation, double Step, int MaxSizeOfRing, do
     ///--Заполняем внутренние переменные
     ///--
     int_ArraySize 		= ArraySize;
-    int_Generation		= Generation;
     int_Step			= Step;
     int_MaxSizeOfRing	= MaxSizeOfRing;
     d_Easing_ratio		= EasingRatio;
@@ -70,7 +67,7 @@ double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
     ///--
     ///--Присваем значение агенту в струне
     ///--
-    _Agents[vecSize - 1][0].value = value;
+    _Agents[vecSize - 1][0].setValue(value);
 
 	///--
 	///--Заводим первое кольцо в стопку колец если необходимо
@@ -82,15 +79,15 @@ double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
 
     if (vecSize > 1)
     {
-		_Agents[vecSize - 1][0].previous_differential = (_Agents[vecSize - 1][0].value) / (_Agents[vecSize - 1 - 1][0].value);
+		_Agents[vecSize - 1][0].setDifferential( (_Agents[vecSize - 1][0].getValue()) / (_Agents[vecSize - 1 - 1][0].getValue()) );
 
 
         InertialVector * fcst = new InertialVector();
 		
 		fcst =	PushToPolesRing(
-									1,																		// Уровень матрицы
-									(_Agents[vecSize - 1][0].value)/ (_Agents[vecSize - 1 - 1][0].value),	// Отношение текущего значения по уровню матрицы к предыдущему
-									_Agents[vecSize - 1 - 1][0].previous_differential								// предыдущее отношение по уровню матрицы
+									1,																		        // Уровень матрицы
+									(_Agents[vecSize - 1][0].getValue())/ (_Agents[vecSize - 1 - 1][0].getValue()),	// Отношение текущего значения по уровню матрицы к предыдущему
+									_Agents[vecSize - 1 - 1][0].getDifferential()								    // предыдущее отношение по уровню матрицы
 							    );
 
 		//--
@@ -103,7 +100,7 @@ double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
             fcst->setValue(fcst->getValue());
             fcst->setDistance(1);
             _cumuVec->push_back(fcst);
-            _Agents[vecSize - 1][0].ReceivedForecast = fcst->getValue();
+            _Agents[vecSize - 1][0].setReceivedForecast(fcst->getValue());
         }
 
 		
@@ -207,7 +204,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
             ///-- текущий__________|
             ///--
 
-            /*расчитываемый*/(*ptr_array)[i - 1][j + 1].value =		/*текущий*/(*ptr_array)[i][j].value		+	/*предыдущий*/(*ptr_array)[i - 1][j].value;
+            /*расчитываемый*/(*ptr_array)[i - 1][j + 1].setValue( 	/*текущий*/(*ptr_array)[i][j].getValue()+	/*предыдущий*/(*ptr_array)[i - 1][j].getValue()  )  ;
 
         }
     }
@@ -230,8 +227,8 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
             ///-- вычитаемый______|_______текущий___________|
             ///--
 
-            /*расчитываемый*/	(*ptr_array)[i - 1][j + 1].value	=	/*текущий*/		(*ptr_array)[i][j].value	+	/*предыдущий*/(*ptr_array)[i - 1][j].value	-
-                                                                        /*вычитаемый*/	(*ptr_array)[i][j - 1].value;
+            /*расчитываемый*/	(*ptr_array)[i - 1][j + 1].setValue(	/*текущий*/		(*ptr_array)[i][j].getValue()	+	/*предыдущий*/(*ptr_array)[i - 1][j].getValue()	-
+                                                                        /*вычитаемый*/	(*ptr_array)[i][j - 1].getValue()  );
 
             ///--
             ///--Заводим значение в кольцо полюсов (PolesRing)
@@ -271,11 +268,11 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                     ///--Процентный переход
                     ///--
 
-                    (*ptr_array)[i - 1][j + 1].previous_differential = ((*ptr_array)[i - 1][j + 1].value) / ((*ptr_array)[i - 1 - level][j + 1].value);
+                    (*ptr_array)[i - 1][j + 1].setDifferential(   ((*ptr_array)[i - 1][j + 1].getValue()) / ((*ptr_array)[i - 1 - level][j + 1].getValue())  );
 
                     fcst =	PushToPolesRing(    level,
-												((*ptr_array)[i - 1][j + 1].value)/ ((*ptr_array)[i - 1 - level][j + 1].value),		// Отношение текущего значения по уровню матрицы к предыдущему
-												(*ptr_array)[i - 1 - level][j + 1].previous_differential							// предыдущее отношение по уровню матрицы
+												((*ptr_array)[i - 1][j + 1].getValue())/ ((*ptr_array)[i - 1 - level][j + 1].getValue()),		// Отношение текущего значения по уровню матрицы к предыдущему
+												(*ptr_array)[i - 1 - level][j + 1].getDifferential()							// предыдущее отношение по уровню матрицы
 											);
                 
 					//--
@@ -288,7 +285,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                         fcst->setValue(fcst->getValue());
                         fcst->setDistance(level);
                         _cumuVec->push_back(fcst);
-                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
+                        (*ptr_array)[i - 1][j + 1].setReceivedForecast(fcst->getValue() );
                     }
                 }
                     
@@ -298,7 +295,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                 else
                 {
 					
-                    fcst = PushToPolesRing(level, (*ptr_array)[i - 1][j + 1].value);
+                    fcst = PushToPolesRing(level, (*ptr_array)[i - 1][j + 1].getValue());
 
 					//--
 					//--Если инерциальный прогноз сформирован и его значение не равно нулю
@@ -311,7 +308,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
                         fcst->setDistance(level);			// Устанавливаем уровень в матрице
 						
                         _cumuVec->push_back(fcst);			// Заводим в куммулятивный вектор прогноза
-                        (*ptr_array)[i - 1][j + 1].ReceivedForecast = fcst->getValue();
+                        (*ptr_array)[i - 1][j + 1].setReceivedForecast(fcst->getValue());
                     }
                 }
             }

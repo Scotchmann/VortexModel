@@ -31,8 +31,7 @@ public:
     ///--Публичные поля
     ///--
     
-	Pole * ptr_source_Pole = nullptr;			// Полюс источник
-    double d_value;								// Значение
+
 
 
     ///--
@@ -50,7 +49,7 @@ private:
     ///--
     ///--Приватные поля
     ///--
-	
+	Pole * ptr_source_Pole = nullptr;			// Полюс источник
     double d_strengthen_Step;					// Шаг укрепления
     double d_easing_Ratio;						// Коэффициент ослабления
     double d_reliability;				       	// Надежность

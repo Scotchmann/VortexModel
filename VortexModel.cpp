@@ -10,8 +10,8 @@ Vortex * ptr_DownVortex;
 const int 	ArraySize 	= 300;	// Размер массива
 int 		counter 	= 1;	// Счетчик
 int 		_count 		= 0;    // Размер масива У,Х
-float* 		X;           		// масив для хранение х-ов
-float* 		Y;           		// масив для хранения у-ов
+double* 		X;           		// масив для хранение х-ов
+double* 		Y;           		// масив для хранения у-ов
 
 double      d_maximal_reliability = 0; // максимальная надежность
 
@@ -83,8 +83,8 @@ double pushAgent(double value, bool Up)
 int DrawChart(CumulativeVector * _CumuCon)
 {
     
-	vector<float> arrY;  // Вектор х-ов
-    vector<float> arrX;  // Вектор y-ов
+	vector<double> arrY;  // Вектор х-ов
+    vector<double> arrX;  // Вектор y-ов
 
 
 	//--
@@ -109,8 +109,8 @@ int DrawChart(CumulativeVector * _CumuCon)
     }
 	
 
-    X = new float[arrX.size()];  // Создание масива с х
-    Y = new float[arrY.size()];  // Создание масива с У
+    X = new double[arrX.size()];  // Создание масива с х
+    Y = new double[arrY.size()];  // Создание масива с У
 
 
     for(int j = 0; j < arrX.size(); j++)
@@ -142,6 +142,8 @@ int DrawChart(CumulativeVector * _CumuCon)
 	
     delete [] X;
     delete [] Y;
+
+    return 0;
 }
 
 ///--
