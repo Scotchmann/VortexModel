@@ -29,6 +29,8 @@ public:
 
     double getValue() const;
 
+    ///--Добавляем горизонтальную струну
+    ///--Добавляем горизонтальную струну
     void setValue(double value);
 
     double getDifferential() const;

@@ -55,7 +55,8 @@ int ProcessChars()
     double value_to_push = 0;	// для хранения входного значения
 
     string s;                                                       											// сюда будем ложить считанную строку
-    ifstream file("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");   // файл из которого читаем
+    //ifstream file("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");   // файл из которого читаем
+    ifstream file("/home/vortex/ClionProjects/Leo");   // файл из которого читаем
 
 	///--
 	///--Инициализируем вихрь
@@ -95,6 +96,52 @@ int ProcessChars()
     }
 
     file.close(); // закрываем файл
+
+
+
+
+
+    ifstream file1("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");   // файл из которого читаем
+    //ifstream file1("/home/vortex/ClionProjects/Leo");   // файл из которого читаем
+
+
+
+     i_counter = 1;		// отладочный счетчик
+
+    ///--
+    ///--Цикл перебора строк файла
+    ///--
+    while (getline(file1, s))
+    {
+
+        ///--
+        ///--Отладочная проверка
+        ///--
+        if (i_counter == 9998)
+        {
+            int b = 0;
+            //break;
+        }
+
+        const char * cstr = s.c_str();									// получаем строку в стиле C
+
+        ///--
+        ///--Цикл перебора строки
+        ///--
+        for (unsigned int i = 0; i < strlen(cstr); i++)
+        {
+            value_to_push = (double)((int)(cstr[i]));					// нормализуем входное значение для дальнейшей обработки
+            pushAgent(value_to_push, true);								// заводим значение в модель
+            cout << ((int)cstr[i]) << "\t " << (int)i_counter << endl; 	// выводим на экран
+            i_counter++;
+        }
+
+    }
+
+    file1.close(); // закрываем файл
+
+
+
     return 0;
 }
 

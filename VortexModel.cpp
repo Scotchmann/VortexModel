@@ -7,7 +7,7 @@ using namespace std;
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-const int 	ArraySize 	= 300;	// Размер массива
+const int 	ArraySize 	= 600;	// Размер массива
 int 		counter 	= 1;	// Счетчик
 int 		_count 		= 0;    // Размер масива У,Х
 double* 		X;           		// масив для хранение х-ов
