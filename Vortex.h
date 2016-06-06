@@ -10,8 +10,11 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
+#include <boost/compute.hpp>
 
 using namespace std;
+
+namespace compute = boost::compute;
 
 typedef vector<InertialVector * > CumulativeVector;
 
@@ -28,10 +31,10 @@ public:
 	Vortex	();
     
 	Vortex	(	
-				int 	ArraySize 		= 0, 		//
+				int 	ArraySize 		= 0, 		// Количество колец
 				int 	Generation 		= 0, 		// Поколение
-				double 	Step 			= 0.5, 		// Шаг в процентах между полюсами
-				int 	MaxSizeOfRing 	= 500, 		// Максимальный размер кольца
+				double 	Step 			= 0.0005, 	// Шаг в процентах между полюсами
+				int 	MaxSizeOfRing 	= 500000, 	// Максимальный размер кольца
 				double 	EasingRatio 	= 0.00001, 	// Коэффициент ослабления
 				double 	strengthen_step = 1.0		// Шаг укрепления связи
 			);
@@ -62,9 +65,9 @@ private:
     InertialVector *	ProcessPole					(Pole * _pole, double value);								// Обработка полюса
     void				AddNewPoleToPolesRing		(int level, Pole * _pole, bool isToPush, int index = 0);	// Заведение нового полюса в кольцо
 
-    ///--
-    ///--Компаратор полюсов
-    ///--
+    //--
+    //--Компаратор полюсов
+    //--
     struct PoleComparator 
 	{
         bool operator() (const Pole * left, const Pole * right)
@@ -75,9 +78,9 @@ private:
 	} PoleComparatorObject;
 
 	
-	///--
-	///--Компаратор инерциальных векторов
-	///--
+	//--
+	//--Компаратор инерциальных векторов
+	//--
     struct ForecastComparator
 	{
         bool operator() (const InertialVector * left, const InertialVector * right)

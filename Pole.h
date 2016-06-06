@@ -40,6 +40,7 @@ public:
     bool sortSourceConnections      ();
     bool easeAllBonds               ();
     double getValue                 () const;
+    double value                 () ;
     double getCumulativeReliability () const;
 
 

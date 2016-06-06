@@ -7,35 +7,50 @@ using namespace std;
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-const int 	ArraySize 	= 600;	// Размер массива
+int 	    ArraySize 	= 600;	// Размер массива
 int 		counter 	= 1;	// Счетчик
 int 		_count 		= 0;    // Размер масива У,Х
-double* 		X;           		// масив для хранение х-ов
-double* 		Y;           		// масив для хранения у-ов
+double* 	X;           		// масив для хранение х-ов
+double* 	Y;           		// масив для хранения у-ов
+
+int			DisplayX 	= 1600;
+int 		DisplayY	= 800;
 
 double      d_maximal_reliability = 0; // максимальная надежность
 
 
 CumulativeVector _CumulativeContainer;
 
-///--
-///--Инициализация вихря
-///--
-void InitializeVortex()
+//--
+//--Инициализация вихря
+//--
+void InitializeVortex(
+        int 	ArrSize 		 , 		//
+        int 	Generation 		 , 		// Поколение
+        double 	Step 			 , 		// Шаг в процентах между полюсами
+        int 	MaxSizeOfRing 	 , 		// Максимальный размер кольца
+        double 	EasingRatio 	 , 	    // Коэффициент ослабления
+        double 	strengthen_step  		// Шаг укрепления связи
+                     )
 {
-    ptr_UpVortex 	= new Vortex(ArraySize, 1);
+    if(ArrSize > 0)
+    {
+        ArraySize = ArrSize;
+    }
+
+    ptr_UpVortex 	= new Vortex(ArraySize, Generation, Step, MaxSizeOfRing, EasingRatio,  strengthen_step);
     //ptr_DownVortex 	= new Vortex(ArraySize, 1);
 
-	///--
-    ///-- Стандартное создание окна в OpenGl
-    ///--
+	//--
+    //-- Стандартное создание окна в OpenGl
+    //--
 	int argc = 0;
     char ** argv = nullptr;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(1600, 800);
+    glutInitWindowSize(DisplayX, DisplayY);
     glutInitWindowPosition(20, 810);
-    glutCreateWindow("Chart");
+    glutCreateWindow("vortex model");
     glClearColor(0.0, 0.0, 0.0, 0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -43,9 +58,9 @@ void InitializeVortex()
 
 }
 
-///--
-///--Заводит значение в вихрь
-///--
+//--
+//--Заводит значение в вихрь
+//--
 double pushAgent(double value, bool Up)
 {
 
@@ -77,9 +92,9 @@ double pushAgent(double value, bool Up)
     return d_result;
 }
 
-///--
-///--Функция формирования графика из куммулятивного вектора прогноза
-///--
+//--
+//--Функция формирования графика из куммулятивного вектора прогноза
+//--
 int DrawChart(CumulativeVector * _CumuCon)
 {
     
@@ -98,9 +113,9 @@ int DrawChart(CumulativeVector * _CumuCon)
 			arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );				// Формируем уровни треугольной матрицы на графике
 			arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
             
-			///--
-			///--Получаем максимальную надежность за проход
-			///--
+			//--
+			//--Получаем максимальную надежность за проход
+			//--
 			if(((CumulativeVector)(*_CumuCon))[i]->getDistance() > d_maximal_reliability)
             {
                 d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getDistance();
@@ -115,26 +130,26 @@ int DrawChart(CumulativeVector * _CumuCon)
 
     for(int j = 0; j < arrX.size(); j++)
     {
-		///--
-        ///--Запись диапазона в массив Х
-		///--
+		//--
+        //--Запись диапазона в массив Х
+		//--
         X[j] = arrX[j];
     }
 
     for(int j = 0; j < arrY.size(); j++)
     {
-		///--
-        ///--Запрсь диапазона в массив Y
-		///--
+		//--
+        //--Запрсь диапазона в массив Y
+		//--
         Y[j] = arrY[j];
     }
 
     _count = (int)arrX.size();
     glutDisplayFunc(DisplayChart);
 	
-	///--
-	///--Отрисовываем график на экране
-	///--
+	//--
+	//--Отрисовываем график на экране
+	//--
     DisplayChart();
 
     
@@ -146,9 +161,9 @@ int DrawChart(CumulativeVector * _CumuCon)
     return 0;
 }
 
-///--
-///--Функция перерисовки экрана
-///--
+//--
+//--Функция перерисовки экрана
+//--
 void DisplayChart()
 {                    
 
@@ -157,10 +172,10 @@ void DisplayChart()
 
     glColor3f(1.0, 1.0, 1.0);
 	
-	///--
-	///--Рисование системы координат
-    ///--
-	glVertex3f(0, ArraySize/2, 0);
+	//--
+	//--Рисование системы координат
+    //--
+	glVertex3f(0, ArraySize, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
@@ -174,6 +189,8 @@ void DisplayChart()
 	{
         glVertex3f(10 + i * 5, -0.5, 0);
         glVertex3f(10 + i * 5, 0.5, 0);
+
+
     }
 
     for(int i = -10; i < ArraySize/5; i++)
@@ -187,9 +204,9 @@ void DisplayChart()
 
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_LINE_STIPPLE); // разрешаем рисовать
-    // прерывистую линию
-    glLineStipple(2,6);    // устанавливаем маску
+    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
+								// прерывистую линию
+    glLineStipple(2,6);    		// устанавливаем маску
     // пояснения см. ниже
     glBegin(GL_LINE_LOOP);
     glColor3d(0,0,1);
@@ -200,18 +217,18 @@ void DisplayChart()
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_LINE_STIPPLE);
 
-    ///--
-	///-- Рисование точек графика функции
-	///--
+    //--
+	//-- Рисование точек графика функции
+	//--
 	glBegin(GL_POINTS); // 
     //glColor3f(0.13, 0.67, 0.82);
     glColor3f(1.0, 1.0, 1.0);
     
 	float y;
     
-	///--
-	///--Отрисовываем куммулятивный вектор
-	///--
+	//--
+	//--Отрисовываем куммулятивный вектор
+	//--
 	for(int i = 0; i < _count; i++)
     {
         if(X[i] > 50)
@@ -227,6 +244,55 @@ void DisplayChart()
     }
     
 	glEnd();
+
+
+
+    glColor3f(1,1,0);
+	
+	//--
+	//--Отрисовываем подпись графика
+	//--
+    string text = "dynamic plot";				// текст подписи
+
+    glRasterPos2f(100 - 6, ArraySize/2 - 3 );	// положение текста
+
+	//--
+	//-- Отрисовка букв подписи
+	//--
+    for (int it=0; it<text.size(); it++)
+        glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
+
+
+	//--
+	//--Отрисовываем циферное обозначение координат X-ов
+	//--
+    for(int i = 1; i < 20; i++)
+    {
+        string text = to_string(i*5);
+		
+        glRasterPos2f(i * 5, 0.5);
+
+        for (int it=0; it<text.size(); it++)
+            glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
+
+    }
+
+	//--
+	//--Отрисовываем циферное обозначение координат Y-ов
+	//--
+    for(int i = 1; i < ArraySize/5; i++)
+    {
+        string text = to_string(i*10);
+
+        glRasterPos2f( 0.5, i * 5);
+
+        for (int it=0; it<text.size(); it++)
+            glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
+    }
+
+	//--
+	//--Выводим на экран
+	//--
     glutSwapBuffers();
 }
 
