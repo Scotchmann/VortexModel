@@ -86,15 +86,16 @@ int ProcessChars()
     ///--Инициализируем вихрь
     ///--
     InitializeVortex(
-                       300,     //
-                         0, 	// Поколение
-                       0.25, 	// Шаг в процентах между полюсами
-                      1000,     // Максимальный размер кольца
-                    0.0001, 	// Коэффициент ослабления
-                       1.0		// Шаг укрепления связи
+                        300,     //
+                        0, 	// Поколение
+                        0.0025, 	// Шаг в процентах между полюсами
+                        1000,     // Максимальный размер кольца
+                        0.0001, 	// Коэффициент ослабления
+                        1		// Шаг укрепления связи
     );
 
     int i_counter = 1;		// отладочный счетчик
+    int nextchar  = 0;
 
 	///--
 	///--Цикл перебора строк файла
@@ -119,8 +120,12 @@ int ProcessChars()
         for (unsigned int i = 0; i < strlen(cstr); i++) 
 		{
             value_to_push = (double)((int)(cstr[i]));					// нормализуем входное значение для дальнейшей обработки
-            pushAgent(value_to_push, true);								// заводим значение в модель
-            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << (int)i_counter << endl; 	// выводим на экран
+
+
+            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << nextchar << "\t " << (int)i_counter << endl; 	// выводим на экран
+            nextchar =  (int)pushAgent(value_to_push, true);                                                        // заводим значение в модель
+
+
             i_counter++;
         }
 
@@ -155,8 +160,12 @@ int ProcessChars()
         for (unsigned int i = 0; i < strlen(cstr); i++)
         {
             value_to_push = (double)((int)(cstr[i]));					// нормализуем входное значение для дальнейшей обработки
-            pushAgent(value_to_push, true);								// заводим значение в модель
-            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << (int)i_counter << endl; 	// выводим на экран
+
+
+            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << nextchar << "\t " << (int)i_counter << endl; 	// выводим на экран
+            nextchar =  (int)pushAgent(value_to_push, true);
+
+
             i_counter++;
         }
 

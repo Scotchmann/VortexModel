@@ -11,17 +11,21 @@
 #include <math.h>
 #include <algorithm>
 #include <boost/compute.hpp>
+#include <thread>
+#include <mutex>
 
 using namespace std;
 
 namespace compute = boost::compute;
 
 typedef vector<InertialVector * > CumulativeVector;
+typedef vector< vector<Pole *> >  OrRing;
 
 class Vortex;
 
 typedef vector< vector< Agent > > AgentsArray;	// Алиас для массива агентов
 typedef vector< Vortex* > VortexArray;			// Алиас для массива вихря
+
 
 class Vortex
 {
@@ -56,14 +60,18 @@ private:
     int			int_MaxSizeOfRing;						// Максимальный размер кольца
     double		d_strengthen_step;                      // Шаг укрепления связи
 
+
+
+
     vector< vector<Pole *> > 	PolesRingsStack;        // Стопка колец
-    vector<Pole *>  			OrderedPolesRing;		// Упорядоченное кольцо полюсов
+    OrRing 	OrderedPolesRing;		// Упорядоченное кольцо полюсов
 
 	
     void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int, CumulativeVector *);			// Пересчет основного пула треугольной матрицы
     InertialVector *	PushToPolesRing				(int level, double value, double prev_value = 0);			// Заведение значения в кольцо
-    InertialVector *	ProcessPole					(Pole * _pole, double value);								// Обработка полюса
+    InertialVector *	ProcessPole					(Pole *_pole, double value, int level);						// Обработка полюса
     void				AddNewPoleToPolesRing		(int level, Pole * _pole, bool isToPush, int index = 0);	// Заведение нового полюса в кольцо
+
 
     //--
     //--Компаратор полюсов
@@ -78,6 +86,8 @@ private:
 	} PoleComparatorObject;
 
 	
+    static void         SortOrderedRing             (int level, OrRing * O_R, PoleComparator * PC);                                                         // Сортировка упорядоченного кольца
+
 	//--
 	//--Компаратор инерциальных векторов
 	//--

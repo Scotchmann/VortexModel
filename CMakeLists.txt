@@ -32,5 +32,5 @@ include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS}  ${Boost_INCLU
 
 link_directories(${OpenCL_LIBRARY})
 
-target_link_libraries(VortexModel_linux ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}  ${Boost_LIBRARIES} ${OpenCL_LIBRARY})
+target_link_libraries(VortexModel_linux -lm -lpthread ${OPENGL_LIBRARIES} ${GLUT_LIBRARY}  ${Boost_LIBRARIES} ${OpenCL_LIBRARY})
 

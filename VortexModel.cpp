@@ -41,10 +41,10 @@ void InitializeVortex(
     ptr_UpVortex 	= new Vortex(ArraySize, Generation, Step, MaxSizeOfRing, EasingRatio,  strengthen_step);
     //ptr_DownVortex 	= new Vortex(ArraySize, 1);
 
-	//--
+    //--
     //-- Стандартное создание окна в OpenGl
     //--
-	int argc = 0;
+    int argc = 0;
     char ** argv = nullptr;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -54,7 +54,14 @@ void InitializeVortex(
     glClearColor(0.0, 0.0, 0.0, 0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-2, 100.5, -2, ArraySize/2 + 0.5, -100, 100);
+
+
+    ArraySize = 180;
+
+    //ArraySize = ArraySize/2;
+
+
+    glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
 
 }
 
@@ -89,7 +96,38 @@ double pushAgent(double value, bool Up)
     double d_result = ptr_PrimalVortex->pushAgent(value, &_CumulativeContainer);
     DrawChart(&_CumulativeContainer);
 
-    return d_result;
+    double result_value = 0;
+    int    primal_counter = 0;
+
+    for(int i = 0; i < 200; ++i)
+    {
+        int counter_of_values = 0;
+        double val = 0;
+
+        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size()-1; ++j)
+        {
+            if (_CumulativeContainer[j]->getValue() == i)
+            {
+                val = val + i;
+                counter_of_values++;
+            }
+        }
+
+
+        if(counter_of_values > primal_counter)
+        {
+            primal_counter = counter_of_values;
+            result_value = val/counter_of_values;
+        }
+
+
+
+    }
+
+
+    return result_value;
+
+    //return d_result;
 }
 
 //--
@@ -110,16 +148,20 @@ int DrawChart(CumulativeVector * _CumuCon)
 		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
 			
-			arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );				// Формируем уровни треугольной матрицы на графике
-			arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
+            //arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
+            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getValue() );        // Формируем уровни надежности на графике
+
+            arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
+
+
             
 			//--
 			//--Получаем максимальную надежность за проход
 			//--
-			if(((CumulativeVector)(*_CumuCon))[i]->getDistance() > d_maximal_reliability)
-            {
-                d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getDistance();
-            }
+//			if(((CumulativeVector)(*_CumuCon))[i]->getDistance() > d_maximal_reliability)
+//            {
+//                d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getDistance();
+//            }
 		}
     }
 	
@@ -153,7 +195,7 @@ int DrawChart(CumulativeVector * _CumuCon)
     DisplayChart();
 
     
-	//    glutMainLoop();
+    //    glutMainLoop();
 	
     delete [] X;
     delete [] Y;
@@ -175,7 +217,7 @@ void DisplayChart()
 	//--
 	//--Рисование системы координат
     //--
-	glVertex3f(0, ArraySize, 0);
+    glVertex3f(0, ArraySize, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
@@ -187,21 +229,22 @@ void DisplayChart()
 
     for(int i = -10; i < 20; i++)
 	{
-        glVertex3f(10 + i * 5, -0.5, 0);
-        glVertex3f(10 + i * 5, 0.5, 0);
+        glVertex3f(10 + i * 5, -1, 0);
+        glVertex3f(10 + i * 5, 1, 0);
 
 
     }
 
-    for(int i = -10; i < ArraySize/5; i++)
+    for(int i = -10; i < ArraySize/10; i++)
 	{
-        glVertex3f(-0.5, 10 + i * 5 , 0);
-        glVertex3f(0.5, 10 + i * 5 , 0);
+        glVertex3f(-0.5, 10 + i * 10 , 0);
+        glVertex3f(0.5, 10 + i * 10 , 0);
     }
 	
     glEnd();
 
 
+    //(1) Отладочная ось - отображение пробела символ 32
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
@@ -210,9 +253,25 @@ void DisplayChart()
     // пояснения см. ниже
     glBegin(GL_LINE_LOOP);
     glColor3d(0,0,1);
-        glVertex3f(50, 300, 0);
+        glVertex3f(0, 32, 0);
+        glVertex3f(100, 32, 0);
+    glEnd();
+    //(/1)
+
+
+    glLineWidth(0.01);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
+                                // прерывистую линию
+    glLineStipple(2,6);    		// устанавливаем маску
+    // пояснения см. ниже
+    glBegin(GL_LINE_LOOP);
+    glColor3d(0,0,1);
+        glVertex3f(50, ArraySize, 0);
         glVertex3f(50, 0, 0);
     glEnd();
+
+
 
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_LINE_STIPPLE);
@@ -254,7 +313,7 @@ void DisplayChart()
 	//--
     string text = "dynamic plot";				// текст подписи
 
-    glRasterPos2f(100 - 6, ArraySize/2 - 3 );	// положение текста
+    glRasterPos2f(100 - 6, ArraySize - 5 );	// положение текста
 
 	//--
 	//-- Отрисовка букв подписи
@@ -270,7 +329,7 @@ void DisplayChart()
     {
         string text = to_string(i*5);
 		
-        glRasterPos2f(i * 5, 0.5);
+        glRasterPos2f(i * 5, 3);
 
         for (int it=0; it<text.size(); it++)
             glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
@@ -280,11 +339,11 @@ void DisplayChart()
 	//--
 	//--Отрисовываем циферное обозначение координат Y-ов
 	//--
-    for(int i = 1; i < ArraySize/5; i++)
+    for(int i = 1; i < ArraySize/10; i++)
     {
         string text = to_string(i*10);
 
-        glRasterPos2f( 0.5, i * 5);
+        glRasterPos2f( 0.5, i * 10);
 
         for (int it=0; it<text.size(); it++)
             glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);

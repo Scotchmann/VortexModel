@@ -77,6 +77,11 @@ double Vortex::pushAgent(double value, CumulativeVector * _cumuVec)
         PolesRingsStack.push_back(vector<Pole*>());
     }
 
+    if(OrderedPolesRing.size() == 0)
+    {
+        OrderedPolesRing.push_back(vector<Pole*>());
+    }
+
     if (vecSize > 1)
     {
 		_Agents[vecSize - 1][0].setDifferential( (_Agents[vecSize - 1][0].getValue()) / (_Agents[vecSize - 1 - 1][0].getValue()) );
@@ -154,7 +159,7 @@ void Vortex::RecalculationOfMainPool(int i, int j, AgentsArray * ptr_array, int 
 	//--
 	//--Если необходимо добавим новое кольцо в стопку
 	//--
-    if (PolesRingsStack.size() < level)
+    while (PolesRingsStack.size() < level)
     {
         PolesRingsStack.push_back(vector<Pole*>());
     }
@@ -472,7 +477,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
 			
             if (value == PolesRingsStack[level-1][i]->getValue())
             {
-                Answer 			= ProcessPole(PolesRingsStack[level-1][i], value);	// формируем ответ
+                Answer 			= ProcessPole(PolesRingsStack[level - 1][i], value, level);	// формируем ответ
                 ptr_TargetPole 	= PolesRingsStack[level-1][i];						// связываем целевой полюс с новым
                 break;
             }
@@ -511,7 +516,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
 				//--
                 else
                 {
-                    Answer 			= ProcessPole(PolesRingsStack[level-1][0], value);	// формируем ответ
+                    Answer 			= ProcessPole(PolesRingsStack[level - 1][0], value, level);	// формируем ответ
                     ptr_TargetPole 	= PolesRingsStack[level-1][0];						// связываем целевой полюс с новым
                 }
                 break;
@@ -565,7 +570,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
                 //--
                 else
                 {
-                    Answer			= ProcessPole(ptr_PoleToWorkWith, value);	// формируем ответ
+                    Answer			= ProcessPole(ptr_PoleToWorkWith, value, level);	// формируем ответ
                     ptr_TargetPole 	= ptr_PoleToWorkWith;						// Назначаем целевой полюс
                 }
 
@@ -605,7 +610,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
                 //--
                 else
                 {
-                    Answer = ProcessPole(PolesRingsStack[level-1][i], value);	// формируем ответ
+                    Answer = ProcessPole(PolesRingsStack[level - 1][i], value, level);	// формируем ответ
                     ptr_TargetPole = PolesRingsStack[level-1][i];				// Назначаем целевой полюс
                 }
 
@@ -631,12 +636,12 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
     //--Если передано предыдущее значение (не равно нулю)
     //--то найдем полюс, соотвествующий предыдущему значению
     //--
-    if(prev_value != 0 && level > 1)
+    if(prev_value != 0 && level > 1 && level < int_ArraySize)
     {
-        for (int i = 0; i != PolesRingsStack[level-2].size(); ++i)
+        for (int i = 0; i != PolesRingsStack[level].size(); ++i)
         {
-            double d_max 	= max(prev_value, PolesRingsStack[level-2][i]->getValue());	// максимальное значение
-            double d_min 	= min(prev_value, PolesRingsStack[level-2][i]->getValue());	// минимальное значение
+            double d_max 	= max(prev_value, PolesRingsStack[level][i]->getValue());	// максимальное значение
+            double d_min 	= min(prev_value, PolesRingsStack[level][i]->getValue());	// минимальное значение
             double bias 	= 100 - d_min / (d_max / 100);				                // смещение в процентах между максимальным
 																			            // и минимальным значением относительно максимального
 
@@ -646,7 +651,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
                 //--Если смещение менее _Step процентов значит
                 //--полюс найден
                 //--
-                ptr_SourcePole = PolesRingsStack[level-2][i];	// найденный полюс
+                ptr_SourcePole = PolesRingsStack[level][i];	// найденный полюс
 
                 //--
                 //--Далее перебираем связи в найденном полюсе
@@ -655,7 +660,7 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
                 //--то укрепляем её
                 //--если нет - создаем новую связь
                 //--
-                int _ConnectionsSize 	= (int)(PolesRingsStack[level-2][i]->Connections.size());	// количество связей
+                int _ConnectionsSize 	= (int)(PolesRingsStack[level][i]->Connections.size());	// количество связей
                 bool IsBondFound 		= false;									                // флаг для записи признака найдена ли связь
 
                 //--
@@ -689,9 +694,9 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
         //--
         //--Ослабляем все связи
         //--
-        for (int i = 0; i != PolesRingsStack[level-2].size(); ++i)
+        for (int i = 0; i != PolesRingsStack[level].size(); ++i)
         {
-            PolesRingsStack[level-2][i]->easeAllBonds();
+            PolesRingsStack[level][i]->easeAllBonds();
         }
     }
 
@@ -703,8 +708,10 @@ InertialVector * Vortex::PushToPolesRing( int 		level,		// уровень мат
 //--
 //--Возвращает вектор инерции по полюсу
 //--
-InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
+InertialVector * Vortex::ProcessPole(Pole *_pole, double value, int level)
 {
+
+
     //--
     //--Создаем вектор инерции с нулевыми значениями
     //--
@@ -721,7 +728,7 @@ InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
     //--
     if (_pole->Connections.size() > 0)
     {
-        answer->setValue(_pole->Connections[0]->getTargetPole()->getValue());	// Устанавливаем значение ответа
+        answer->setValue(_pole->Connections[0]->getTargetPole()->getValue()  -  _pole->getValue());	// Устанавливаем значение ответа
 		
 		double cumulativeTotal 		= _pole->getCumulativeReliability();		// Получаем куммулятивную надежность полюса
 		double strongestReliability = _pole->Connections[0]->getReliability();	// Получаем максимальную надежность из связей в полюсе
@@ -745,17 +752,22 @@ InertialVector * Vortex::ProcessPole(Pole * _pole, double value)
 void Vortex::AddNewPoleToPolesRing(int level, Pole * ptr_NewPole, bool isToPush, int index)
 {
 
+    while (OrderedPolesRing.size() < level)
+    {
+        OrderedPolesRing.push_back(vector<Pole*>());
+    }
+
     //--
     //--Сортируем референсное кольцо по куммулятивной силе
     //--
-    sort(OrderedPolesRing.begin(), OrderedPolesRing.end(), PoleComparatorObject);
+    sort(OrderedPolesRing[level-1].begin(), OrderedPolesRing[level-1].end(), PoleComparatorObject);
 
 
     if ((int)PolesRingsStack[level-1].size() >= int_MaxSizeOfRing)
     {
-        if(OrderedPolesRing.size() > 0)
+        if(OrderedPolesRing[level-1].size() > 0)
         {
-            Pole * poleToDelete = OrderedPolesRing[0];
+            Pole * poleToDelete = OrderedPolesRing[level-1][0];
 
             for (auto it = PolesRingsStack[level-1].begin(); it != PolesRingsStack[level-1].end(); ++it)
             {
@@ -766,7 +778,7 @@ void Vortex::AddNewPoleToPolesRing(int level, Pole * ptr_NewPole, bool isToPush,
                     ///--
                     delete *it;
                     PolesRingsStack[level-1].erase(it);
-                    OrderedPolesRing.erase(OrderedPolesRing.begin());
+                    OrderedPolesRing[level-1].erase(OrderedPolesRing[level-1].begin());
                     goto EndSearch;
                 }
             }
@@ -789,7 +801,10 @@ void Vortex::AddNewPoleToPolesRing(int level, Pole * ptr_NewPole, bool isToPush,
     }
 
     Pole * ptr_ToOrderedRing = ptr_NewPole;
-    OrderedPolesRing.push_back(ptr_ToOrderedRing);
+
+
+
+    OrderedPolesRing[level - 1].push_back(ptr_ToOrderedRing);
 }
 
 
