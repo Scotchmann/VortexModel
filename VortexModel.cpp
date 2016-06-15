@@ -94,33 +94,26 @@ double pushAgent(double value, bool Up)
     Up ? ptr_PrimalVortex = ptr_UpVortex : ptr_PrimalVortex = ptr_DownVortex;
 
     double d_result = ptr_PrimalVortex->pushAgent(value, &_CumulativeContainer);
-    DrawChart(&_CumulativeContainer);
+//    DrawChart(&_CumulativeContainer);
 
     double result_value = 0;
-    int    primal_counter = 0;
+    int    result_reliab = 0;
 
-    for(int i = 0; i < 200; ++i)
+    for(int i = 0; i < 100; ++i)
     {
         int counter_of_values = 0;
-        double val = 0;
+        int val = 0;
 
-        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size()-1; ++j)
+        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
         {
-            if (_CumulativeContainer[j]->getValue() == i)
+            if (_CumulativeContainer[j]->getReliability() > result_reliab)
             {
-                val = val + i;
-                counter_of_values++;
+
+                result_reliab = _CumulativeContainer[j]->getReliability();
+                result_value  = _CumulativeContainer[j]->getValue();
+
             }
         }
-
-
-        if(counter_of_values > primal_counter)
-        {
-            primal_counter = counter_of_values;
-            result_value = val/counter_of_values;
-        }
-
-
 
     }
 

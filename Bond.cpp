@@ -35,12 +35,12 @@ bool Bond::Strengthen(double Step)
         _Step = Step;
     }
 
-//    if(d_reliability < d_maxDouble)
-//    {
-//        d_reliability = d_reliability + _Step;
-//    }
+    if(d_reliability < d_maxDouble)
+    {
+        d_reliability = d_reliability + _Step;
+    }
 
-    d_reliability = 1;
+    //d_reliability = 1;
 
     return false;
 }
