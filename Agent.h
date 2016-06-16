@@ -1,55 +1,67 @@
 #ifndef VORTEXMODEL_LINUX_AGENT_H
 #define VORTEXMODEL_LINUX_AGENT_H
 
+#include "differentialset.h"
+
+
 class Agent
 {
 
 public:
 
-	///--
-	///--Конструкторы
-	///--
+	//--
+	//--Конструкторы
+	//--
 	
     Agent();
 	
 //_______________________________________________________________________________________________
 	
-	///--
-	///--Деструкторы
-	///--
-	
-    ~Agent();
-
+	//--
+	//--Деструкторы
+	//--
+    
+	~Agent();
 
 //_______________________________________________________________________________________________
 	
-	///--
-	///--Публичные поля
-	///--
+	//--
+	//--Публичные поля
+	//--
 
     double getValue() const;
 
-    ///--Добавляем горизонтальную струну
-    ///--Добавляем горизонтальную струну
+    //--
+    //--Устанавливает значение агента
+    //--
     void setValue(double value);
 
-    double getDifferential() const;
+    //--
+    //--Получает дифференциал
+    //--
+    DifferentialSet getDifferential() const;
 
-    void setDifferential(double differential);
+    //--
+    //--Устанавливает дифференциал
+    //--
+    void setDifferential(DifferentialSet differential);
 
+    //--
+	//--Получает принятый прогноз
+    //--
     double getReceivedForecast() const;
 
+    //--
+	//--Устанавливает принятый прогноз
+    //--
     void setReceivedForecast(double ReceivedForecast);
 
 
 private:
 
-    double d_value;					//
-    double d_differential;
-    //double previous_differential;	//
-    double reliability;				//
-    Agent * InnerAgent;				//
-    double ReceivedForecast;		//
+    double          d_value;            //
+    DifferentialSet d_differential;     //
+    Agent *         InnerAgent;         //
 
 };
 

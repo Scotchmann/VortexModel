@@ -2,57 +2,65 @@
 #define VORTEXMODEL_LINUX_POLE_H
 #include <vector>
 #include "Bond.h"
+#include "differentialset.h"
 
 using namespace std;
 
 class Bond;
+
 class Pole
 {
 
 public:
 
-    ///--
-    ///--Конструкторы
-    ///--
+    //--
+    //--Конструкторы
+    //--
 	
     Pole	();
-    Pole	(double value);
+    Pole	(double value, DifferentialSet differential);
 
     
-	///--
-    ///--Деструкторы
-    ///--
+	//--
+    //--Деструкторы
+    //--
 	
     ~Pole	();
 
     
-	///--
-    ///--Публичные поля
-    ///--
+	//--
+    //--Публичные поля
+    //--
 	
     vector<Bond*> 	Connections;
 
 
-    ///--
-    ///--Публичные методы
-    ///--
+    //--
+    //--Публичные методы
+    //--
 	
-    bool sortSourceConnections      ();
-    bool easeAllBonds               ();
-    double getValue                 () const;
-    double value                 () ;
-    double getCumulativeReliability () const;
+    bool            sortSourceConnections      	();
+    bool            easeAllBonds               	();
+    double          getValue                 	() const;
+    double          getCumulativeReliability	() const;
+    void            setDifferential             (DifferentialSet differential);
+    DifferentialSet getDifferential             () const;
+    double          get_b_forecast              ();
+    double          get_c_forecast              ();
 
 
 private:
 
-    ///--
-    ///--Приватные поля
-    ///--
+    //--
+    //--Приватные поля
+    //--
 	
-	///--
-	///--Компаратор связей
-	///--
+    double  d_value;                    // Значение
+    DifferentialSet  d_differential; 	// Дифференциал
+	
+	//--
+	//--Компаратор связей
+	//--
     struct BondComparator
     {
         
@@ -62,8 +70,7 @@ private:
         }
 		
     } BondComparatorObject;
-
-    double  d_value;    //Значение
+	
 };
 
 #endif //VORTEXMODEL_LINUX_POLE_H

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 
@@ -22,7 +23,6 @@ int ProcessPoints()
     ///--
     InitializeVortex(
                        0, 		//
-                       0, 		// Поколение
                        0.0005, 		// Шаг в процентах между полюсами
                        500000, 		// Максимальный размер кольца
                        0.00001, 	// Коэффициент ослабления
@@ -75,116 +75,85 @@ int ProcessPoints()
 
 int ProcessChars()
 {
+    
+	std::vector<string> BooksToRead;
+	BooksToRead.push_back("/home/vortex/ClionProjects/Leo");
+	BooksToRead.push_back("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");
 
-    double value_to_push = 0;	// для хранения входного значения
-
-    string s;                                                       											// сюда будем ложить считанную строку
-
-    ifstream file("/home/vortex/ClionProjects/Leo");   // файл из которого читаем
-
-    ///--
-    ///--Инициализируем вихрь
-    ///--
+    //--
+    //--Инициализируем вихрь
+    //--
     InitializeVortex(
-                        300,        //
-                        0,          // Поколение
-                        0.0025, 	// Шаг в процентах между полюсами
+                        1200,       // Размерность матрицы
+                        0.025, 		// Шаг в процентах между полюсами
                         1000,       // Максимальный размер кольца
-                        0.001,     // Коэффициент ослабления
+                        0.0001,     // Коэффициент ослабления
                         1           // Шаг укрепления связи
-    );
+					);
 
-    int i_counter = 1;		// отладочный счетчик
-    int nextchar  = 0;
-    int total_counter = 0;
+    int 	i_counter 		= 1;	// отладочный счетчик
+    int 	nextchar  		= 0;	// прогноз на следующий знак
+    int 	total_counter 	= 0;	// общий подсчет совпадений
+	double 	reliability 	= 0;	// надежность
+	
+	double value_to_push = 0;		// для хранения входного значения
+    string s;     					// сюда будем ложить считанную строку
+	ForecastedValue FCV_G; 			// Полученный прогноз
+	
+    for(int book_number = 0; book_number < BooksToRead.size(); book_number++)
+	{
 
-	///--
-	///--Цикл перебора строк файла
-	///--
-    while (getline(file, s))
-    {
-
-		///--
-		///--Отладочная проверка
-		///--
-        if (i_counter == 9998)				
-        {										
-            int b = 0;						 
-            //break;
-        }
-
-        const char * cstr = s.c_str();									// получаем строку в стиле C 
-
-		///--
-		///--Цикл перебора строки
-		///--
-        for (unsigned int i = 0; i < strlen(cstr); i++) 
+		ifstream file(BooksToRead[book_number]);   // файл из которого читаем
+		
+		//--
+		//--Цикл перебора строк файла
+		//--
+		while (getline(file, s))
 		{
-            value_to_push = (double)((int)(cstr[i]));					// нормализуем входное значение для дальнейшей обработки
 
+			//--
+			//--Отладочная проверка
+			//--
+			if (i_counter == 9998)				
+			{										
+				int b = 0;						 
+				//break;
+			}
 
-            if( ((int)(cstr[i])) == nextchar)
-            {
+			const char * cstr = s.c_str();					// получаем строку в стиле C 
 
-                total_counter++;
-            }
+			//--
+			//--Цикл перебора строки
+			//--
+			for (unsigned int i = 0; i < strlen(cstr); i++) 
+			{
+				
+				value_to_push = (double)(cstr[i]);			// нормализуем входное значение для дальнейшей обработки
+						
+				if( ((int)(cstr[i])) == nextchar)
+				{
+					total_counter++;
+				}
+				
+				//--
+				//--Выводим на экран
+				//--
+				cout << cstr[i] << "\t " << ((int)cstr[i]) << "\t " << nextchar << "\t " << reliability << "% \t " << (int)i_counter << "\t " << total_counter << endl;
+				
+			
+				FCV_G = pushAgent(value_to_push, true); 	// заводим значение в модель
+				nextchar 	=	FCV_G.value; 				// значение
+				reliability =	FCV_G.reliability;			// надежность  
+					
+				
+				i_counter++;
+			}
 
-            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << nextchar << "\t " << (int)i_counter  << "\t " << total_counter << endl; 	// выводим на экран
-            nextchar =  (int)pushAgent(value_to_push, true);                                                        // заводим значение в модель
+		}
 
-
-            i_counter++;
-        }
-
-    }
-
-    file.close(); // закрываем файл
-
-
-    ifstream file1("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");   // файл из которого читаем
-    //ifstream file1("/home/vortex/ClionProjects/Leo");   // файл из которого читаем
-
-    ///--
-    ///--Цикл перебора строк файла
-    ///--
-    while (getline(file1, s))
-    {
-
-        ///--
-        ///--Отладочная проверка
-        ///--
-        if (i_counter == 9998)
-        {
-            int b = 0;
-            //break;
-        }
-
-        const char * cstr = s.c_str();									// получаем строку в стиле C
-
-        ///--
-        ///--Цикл перебора строки
-        ///--
-        for (unsigned int i = 0; i < strlen(cstr); i++)
-        {
-            value_to_push = (double)((int)(cstr[i]));					// нормализуем входное значение для дальнейшей обработки
-
-
-            if( ((int)(cstr[i])) == nextchar)
-            {
-
-                total_counter++;
-            }
-
-            cout << cstr[i] << "\t " <<  ((int)cstr[i]) << "\t " << nextchar << "\t " << (int)i_counter  << "\t " << total_counter << endl; 	// выводим на экран
-            nextchar =  (int)pushAgent(value_to_push, true);
-
-
-            i_counter++;
-        }
-
-    }
-
-    file1.close(); // закрываем файл
+		file.close(); // закрываем файл
+	
+	}
 
     return 0;
 
@@ -198,4 +167,5 @@ int main()
 
     system("pause");
     return 0;
+	
 }

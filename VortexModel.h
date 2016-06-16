@@ -23,7 +23,6 @@ struct ForecastedValue
 ///--Инициализирует вихрь
 ///--
 void InitializeVortex( int 	ArrSize 		    = 0, 	// Количество колец
-                       int 	Generation 		    = 0, 	// Поколение
                        double 	Step 			= 0, 	// Шаг в процентах между полюсами
                        int 	MaxSizeOfRing 	    = 0, 	// Максимальный размер кольца
                        double 	EasingRatio 	= 0, 	// Коэффициент ослабления
@@ -33,7 +32,7 @@ void InitializeVortex( int 	ArrSize 		    = 0, 	// Количество коле
 ///--
 ///--Заводит значение в вихрь
 ///--
-double pushAgent(double value, bool Up);
+ForecastedValue pushAgent(double value, bool Up);
 
 ///--
 ///--Получает значение агента

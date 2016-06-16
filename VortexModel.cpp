@@ -1,22 +1,22 @@
-// TestDLL.cpp : Defines the exported functions for the DLL application.
-//
+
 #include "VortexModel.h"
-//#include <root/TRandom.h>
+
 using namespace std;
 
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-int 	    ArraySize 	= 600;	// Размер массива
-int 		counter 	= 1;	// Счетчик
-int 		_count 		= 0;    // Размер масива У,Х
-double* 	X;           		// масив для хранение х-ов
-double* 	Y;           		// масив для хранения у-ов
+int 	    ArraySize 	= 600;			// Размер массива
+int 		counter 	= 1;			// Счетчик
+int 		_count 		= 0;    		// Размер масива У,Х
 
-int			DisplayX 	= 1600;
-int 		DisplayY	= 800;
+double* 	X;           				// масив для хранение х-ов
+double* 	Y;           				// масив для хранения у-ов
 
-double      d_maximal_reliability = 0; // максимальная надежность
+int			DisplayX 	= 1600;			// Ширина окна 
+int 		DisplayY	= 800;			// Высота окна 
+
+double      d_maximal_reliability = 0; 	// максимальная надежность
 
 
 CumulativeVector _CumulativeContainer;
@@ -25,41 +25,39 @@ CumulativeVector _CumulativeContainer;
 //--Инициализация вихря
 //--
 void InitializeVortex(
-        int 	ArrSize 		 , 		//
-        int 	Generation 		 , 		// Поколение
-        double 	Step 			 , 		// Шаг в процентах между полюсами
-        int 	MaxSizeOfRing 	 , 		// Максимальный размер кольца
-        double 	EasingRatio 	 , 	    // Коэффициент ослабления
-        double 	strengthen_step  		// Шаг укрепления связи
+						int 	ArrSize 		 , 		// Размер массива
+						double 	Step 			 , 		// Шаг в процентах между полюсами
+						int 	MaxSizeOfRing 	 , 		// Максимальный размер кольца
+						double 	EasingRatio 	 , 	    // Коэффициент ослабления
+						double 	strengthen_step  		// Шаг укрепления связи
                      )
 {
-    if(ArrSize > 0)
+    
+	if(ArrSize > 0)
     {
         ArraySize = ArrSize;
     }
 
-    ptr_UpVortex 	= new Vortex(ArraySize, Generation, Step, MaxSizeOfRing, EasingRatio,  strengthen_step);
-    //ptr_DownVortex 	= new Vortex(ArraySize, 1);
+    ptr_UpVortex 	= new Vortex(ArraySize, Step, MaxSizeOfRing, EasingRatio,  strengthen_step);
+
 
     //--
     //-- Стандартное создание окна в OpenGl
     //--
-    int argc = 0;
-    char ** argv = nullptr;
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(DisplayX, DisplayY);
-    glutInitWindowPosition(20, 810);
-    glutCreateWindow("vortex model");
-    glClearColor(0.0, 0.0, 0.0, 0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    int argc 		= 0;
+    char ** argv 	= nullptr;
+	
+    glutInit				(&argc, argv);
+    glutInitDisplayMode		(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize		(DisplayX, DisplayY);
+    glutInitWindowPosition	(20, 810);
+    glutCreateWindow		("vortex model");
+    glClearColor			(0.0, 0.0, 0.0, 0);
+    glMatrixMode			(GL_PROJECTION);
+    glLoadIdentity			();
 
-
-    ArraySize = 180;
-
-    //ArraySize = ArraySize/2;
-
+    //ArraySize = 180;
+    ArraySize = ArraySize/2;
 
     glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
 
@@ -68,8 +66,9 @@ void InitializeVortex(
 //--
 //--Заводит значение в вихрь
 //--
-double pushAgent(double value, bool Up)
+ForecastedValue pushAgent(double value, bool Up)
 {
+	ForecastedValue FCV;
 
     CheckIfForecastIsEmty:
 	
@@ -81,12 +80,10 @@ double pushAgent(double value, bool Up)
     }
 	
 	
-
     if(_CumulativeContainer.size() > 0)
     {
         _CumulativeContainer.clear();
     }
-
 
 
     Vortex * ptr_PrimalVortex = nullptr;
@@ -94,31 +91,22 @@ double pushAgent(double value, bool Up)
     Up ? ptr_PrimalVortex = ptr_UpVortex : ptr_PrimalVortex = ptr_DownVortex;
 
     double d_result = ptr_PrimalVortex->pushAgent(value, &_CumulativeContainer);
-//    DrawChart(&_CumulativeContainer);
+    DrawChart(&_CumulativeContainer);
 
     double result_value = 0;
     int    result_reliab = 0;
 
-    for(int i = 0; i < 100; ++i)
+
+    for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
     {
-        int counter_of_values = 0;
-        int val = 0;
-
-        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
+        if (_CumulativeContainer[j]->getReliability() > result_reliab)
         {
-            if (_CumulativeContainer[j]->getReliability() > result_reliab)
-            {
-
-                result_reliab = _CumulativeContainer[j]->getReliability();
-                result_value  = _CumulativeContainer[j]->getValue();
-
-            }
+            FCV.reliability = result_reliab = _CumulativeContainer[j]->getReliability();
+            FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
         }
-
     }
 
-
-    return result_value;
+    return FCV;
 
     //return d_result;
 }
@@ -132,7 +120,6 @@ int DrawChart(CumulativeVector * _CumuCon)
 	vector<double> arrY;  // Вектор х-ов
     vector<double> arrX;  // Вектор y-ов
 
-
 	//--
 	//--Формируем координаты для куммулятивного вектора прогноза
 	//--
@@ -141,27 +128,16 @@ int DrawChart(CumulativeVector * _CumuCon)
 		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
 			
-            //arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
-            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getValue() );        // Формируем уровни надежности на графике
+            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
+            //arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getValue() );
 
             arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
 
-
-            
-			//--
-			//--Получаем максимальную надежность за проход
-			//--
-//			if(((CumulativeVector)(*_CumuCon))[i]->getDistance() > d_maximal_reliability)
-//            {
-//                d_maximal_reliability = ((CumulativeVector)(*_CumuCon))[i]->getDistance();
-//            }
 		}
     }
 	
-
     X = new double[arrX.size()];  // Создание масива с х
     Y = new double[arrY.size()];  // Создание масива с У
-
 
     for(int j = 0; j < arrX.size(); j++)
     {
@@ -187,7 +163,6 @@ int DrawChart(CumulativeVector * _CumuCon)
 	//--
     DisplayChart();
 
-    
     //    glutMainLoop();
 	
     delete [] X;

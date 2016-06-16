@@ -1,6 +1,6 @@
 #ifndef VORTEXMODEL_LINUX_BOND_H
 #define VORTEXMODEL_LINUX_BOND_H
-#include "vector"
+#include <vector>
 #include "map"
 
 
@@ -12,31 +12,31 @@ class Bond
 	
 public:
 
-    ///--
-    ///--Конструкторы
-    ///--
+    //--
+    //--Конструкторы
+    //--
 	
     Bond	();
     Bond	(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step = 1.1);
 
     
-	///--
-    ///--Деструкторы
-    ///--
+	//--
+    //--Деструкторы
+    //--
     
 	~Bond	();
 
     
-	///--
-    ///--Публичные поля
-    ///--
+	//--
+    //--Публичные поля
+    //--
     
 
 
 
-    ///--
-    ///--Публичные методы
-    ///--
+    //--
+    //--Публичные методы
+    //--
     
 	bool 	Strengthen	   	(double Step = 0);  // Укрепить связь
     bool 	Ease		   	();                 // Ослабить связь
@@ -46,9 +46,9 @@ public:
 
 private:
 
-    ///--
-    ///--Приватные поля
-    ///--
+    //--
+    //--Приватные поля
+    //--
 	Pole * ptr_source_Pole = nullptr;			// Полюс источник
     double d_strengthen_Step;					// Шаг укрепления
     double d_easing_Ratio;						// Коэффициент ослабления

@@ -13,7 +13,7 @@ find_package(Boost 1.61.0 COMPONENTS compute)
 
 
 
-set(SOURCE_FILES main.cpp Vortex.cpp Vortex.h VortexModel.cpp VortexModel.h Agent.cpp Agent.h Bond.cpp Bond.h Pole.cpp Pole.h InertialVector.cpp InertialVector.h )
+set(SOURCE_FILES main.cpp Vortex.cpp Vortex.h VortexModel.cpp VortexModel.h Agent.cpp Agent.h Bond.cpp Bond.h Pole.cpp Pole.h InertialVector.cpp InertialVector.h differentialset.h)
 add_executable(VortexModel_linux ${SOURCE_FILES})
 #list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 #set(ROOT_DIR /usr/include/root/)

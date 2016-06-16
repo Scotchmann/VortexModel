@@ -7,16 +7,15 @@
 #include "Pole.h"
 #include "InertialVector.h"
 #include "VortexModel.h"
+#include "differentialset.h"
 #include <vector>
 #include <math.h>
 #include <algorithm>
-#include <boost/compute.hpp>
 #include <thread>
 #include <mutex>
 
 using namespace std;
 
-namespace compute = boost::compute;
 
 typedef vector<InertialVector * > CumulativeVector;
 typedef vector< vector<Pole *> >  OrRing;
@@ -36,7 +35,6 @@ public:
     
 	Vortex	(	
 				int 	ArraySize 		= 0, 		// Количество колец
-				int 	Generation 		= 0, 		// Поколение
 				double 	Step 			= 0.0005, 	// Шаг в процентах между полюсами
 				int 	MaxSizeOfRing 	= 500000, 	// Максимальный размер кольца
 				double 	EasingRatio 	= 0.00001, 	// Коэффициент ослабления
@@ -64,13 +62,13 @@ private:
 
 
     vector< vector<Pole *> > 	PolesRingsStack;        // Стопка колец
-    OrRing 	OrderedPolesRing;		// Упорядоченное кольцо полюсов
+    OrRing 	OrderedPolesRing;							// Упорядоченное кольцо полюсов
 
 	
-    void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int, CumulativeVector *);			// Пересчет основного пула треугольной матрицы
-    InertialVector *	PushToPolesRing				(int level, double value, double prev_value = 0);			// Заведение значения в кольцо
-    InertialVector *	ProcessPole					(Pole *_pole, double value, int level);						// Обработка полюса
-    void				AddNewPoleToPolesRing		(int level, Pole * _pole, bool isToPush, int index = 0);	// Заведение нового полюса в кольцо
+    void 		        RecalculationOfMainPool		(int, int, AgentsArray *, int, CumulativeVector *);					// Пересчет основного пула треугольной матрицы
+    InertialVector *	PushToPolesRing				(int level, Agent * CurrenAgent, Agent * prev_Agent = nullptr);	// Заведение значения в кольцо
+    InertialVector *	ProcessPole					(Pole *_pole, double value, int level);								// Обработка полюса
+    void				AddNewPoleToPolesRing		(int level, Pole * _pole, bool isToPush, int index = 0);			// Заведение нового полюса в кольцо
 
 
     //--

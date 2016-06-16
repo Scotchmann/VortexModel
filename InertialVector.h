@@ -11,9 +11,9 @@ class InertialVector
 
 public:
 
-	///--
-	///--Публичные методы
-	///--
+	//--
+	//--Публичные методы
+	//--
 	
     double  getValue		() const;
     void    setValue		(double value);
@@ -26,9 +26,9 @@ public:
 
 private:
 
-	///--
-	///--Приватные поля
-	///--
+	//--
+	//--Приватные поля
+	//--
 	
     double  d_value;        // Значение инерции
     double  d_reliability;  // Надежность инерции

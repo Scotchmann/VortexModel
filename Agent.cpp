@@ -3,8 +3,7 @@
 
 Agent::Agent()
 {
-    ReceivedForecast	= 0;
-    d_differential = 0;
+
 }
 
 
@@ -22,22 +21,12 @@ void Agent::setValue(double value)
     Agent::d_value = value;
 }
 
-double Agent::getDifferential() const
+DifferentialSet Agent::getDifferential() const
 {
     return d_differential;
 }
 
-void Agent::setDifferential(double differential)
+void Agent::setDifferential(DifferentialSet differential)
 {
     Agent::d_differential = differential;
-}
-
-double Agent::getReceivedForecast() const
-{
-    return ReceivedForecast;
-}
-
-void Agent::setReceivedForecast(double ReceivedForecast)
-{
-    Agent::ReceivedForecast = ReceivedForecast;
 }
