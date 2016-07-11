@@ -15,14 +15,14 @@ public:
 	//--Публичные методы
 	//--
 	
-    double  getValue		() const;
-    void    setValue		(double value);
+    double  getValue		() const;               // Получает значение
+    void    setValue		(double value);         // Устанавливает значение
 
-    double  getReliability	() const;
-    void    setReliability	(double reliability);
+    double  getReliability	() const;               // Получает надежность
+    void    setReliability	(double reliability);   // Устанавливает надежность
 
-    int     getDistance		() const;
-    void    setDistance		(int distance);
+    int     getDistance		() const;               // Получает дистанцию
+    void    setDistance		(int distance);         // Устанавливает дистанцию
 
 private:
 
@@ -33,7 +33,6 @@ private:
     double  d_value;        // Значение инерции
     double  d_reliability;  // Надежность инерции
     int     i_distance;	    // Дистанция инерции
-
 };
 
 

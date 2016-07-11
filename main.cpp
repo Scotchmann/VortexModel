@@ -2,11 +2,7 @@
 // DiagonalSearch branch
 
 #include "VortexModel.h"
-
-#include <iostream>
-#include <fstream>
 #include <cstring>
-#include <vector>
 
 using namespace std;
 
@@ -16,7 +12,6 @@ int ProcessPoints()
 
     string s;                                                       		// сюда будем ложить считанные строки
     ifstream file("/home/vortex/ClionProjects/ProcessData_84460.txt");    	// файл из которого читаем
-
 
     ///--
     ///--Инициализируем вихрь
@@ -75,8 +70,8 @@ int ProcessPoints()
 
 int ProcessChars()
 {
-    
 	std::vector<string> BooksToRead;
+
 	BooksToRead.push_back("/home/vortex/ClionProjects/Leo");
 	BooksToRead.push_back("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");
 
@@ -95,14 +90,14 @@ int ProcessChars()
     int 	nextchar  		= 0;	// прогноз на следующий знак
     int 	total_counter 	= 0;	// общий подсчет совпадений
 	double 	reliability 	= 0;	// надежность
+    int     distance        = 0;    // дистанция
 	
-	double value_to_push = 0;		// для хранения входного значения
-    string s;     					// сюда будем ложить считанную строку
+	double 	value_to_push 	= 0;	// для хранения входного значения
+    string 	s;     					// сюда будем ложить считанную строку
 	ForecastedValue FCV_G; 			// Полученный прогноз
 	
     for(int book_number = 0; book_number < BooksToRead.size(); book_number++)
 	{
-
 		ifstream file(BooksToRead[book_number]);   // файл из которого читаем
 		
 		//--
@@ -110,7 +105,6 @@ int ProcessChars()
 		//--
 		while (getline(file, s))
 		{
-
 			//--
 			//--Отладочная проверка
 			//--
@@ -127,7 +121,6 @@ int ProcessChars()
 			//--
 			for (unsigned int i = 0; i < strlen(cstr); i++) 
 			{
-				
 				value_to_push = (double)(cstr[i]);			// нормализуем входное значение для дальнейшей обработки
 						
 				if( ((int)(cstr[i])) == nextchar)
@@ -138,34 +131,33 @@ int ProcessChars()
 				//--
 				//--Выводим на экран
 				//--
-				cout << cstr[i] << "\t " << ((int)cstr[i]) << "\t " << nextchar << "\t " << reliability << "% \t " << (int)i_counter << "\t " << total_counter << endl;
+                cout << cstr[i] << "\t " << ((int)cstr[i]) 			// номер символа
+								<< "\t " << nextchar 				// символ
+								<< "\t " << reliability << "% " 	// надежность в процентах
+								<< "\t " << distance 				// дистанция
+								<< "\t " << (int)i_counter 			// счетчик всего перебранных символов
+								<< "\t " << total_counter << endl;	// счетчик совпадений
 				
-			
-				FCV_G = pushAgent(value_to_push, true); 	// заводим значение в модель
-				nextchar 	=	FCV_G.value; 				// значение
-				reliability =	FCV_G.reliability;			// надежность  
+				FCV_G = pushAgent(value_to_push, true);	// заводим значение в модель
+				nextchar 	=	(int)FCV_G.value; 		// значение
+                reliability =	FCV_G.reliability;		// надежность
+                distance    =   (int)FCV_G.distance;    // дистанция
 					
-				
 				i_counter++;
 			}
-
 		}
 
 		file.close(); // закрываем файл
-	
 	}
 
     return 0;
-
 }
 
 int main()
 {
-
     //ProcessPoints();
     ProcessChars();
 
     system("pause");
-    return 0;
-	
+    return 0;	
 }

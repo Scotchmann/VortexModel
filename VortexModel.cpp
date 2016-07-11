@@ -31,8 +31,7 @@ void InitializeVortex(
 						double 	EasingRatio 	 , 	    // Коэффициент ослабления
 						double 	strengthen_step  		// Шаг укрепления связи
                      )
-{
-    
+{   
 	if(ArrSize > 0)
     {
         ArraySize = ArrSize;
@@ -60,7 +59,6 @@ void InitializeVortex(
     ArraySize = ArraySize/2;
 
     glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
-
 }
 
 //--
@@ -97,12 +95,21 @@ ForecastedValue pushAgent(double value, bool Up)
     int    result_reliab = 0;
 
 
-    for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
+    for(int i = 0; i < 160; i++)
     {
-        if (_CumulativeContainer[j]->getReliability() > result_reliab)
+        double cum_reliab = 0;
+        int    cum_count  = 0;
+        double val        = 0;
+        int    dist       = 0;
+
+        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
         {
-            FCV.reliability = result_reliab = _CumulativeContainer[j]->getReliability();
-            FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
+            if (_CumulativeContainer[j]->getReliability() > result_reliab)
+            {
+                FCV.reliability = result_reliab = _CumulativeContainer[j]->getReliability();
+                FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
+                FCV.distance    = _CumulativeContainer[j]->getDistance();;
+            }
         }
     }
 
@@ -128,9 +135,7 @@ int DrawChart(CumulativeVector * _CumuCon)
 		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
 			
-            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );	// Формируем уровни треугольной матрицы на графике
-            //arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getValue() );
-
+            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );		// Формируем уровни треугольной матрицы на графике
             arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
 
 		}
@@ -163,7 +168,7 @@ int DrawChart(CumulativeVector * _CumuCon)
 	//--
     DisplayChart();
 
-    //    glutMainLoop();
+    //    glutMainLoop(); Главный цикл глута
 	
     delete [] X;
     delete [] Y;
@@ -176,10 +181,8 @@ int DrawChart(CumulativeVector * _CumuCon)
 //--
 void DisplayChart()
 {                    
-
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINES);
-
     glColor3f(1.0, 1.0, 1.0);
 	
 	//--
@@ -190,17 +193,11 @@ void DisplayChart()
     glVertex3f(0, 0, 0);
     glVertex3f(100, 0, 0);
 
-//    glVertex3f(50, 100, 0);
-//    glVertex3f(50, 0, 0);
-
-
 
     for(int i = -10; i < 20; i++)
 	{
         glVertex3f(10 + i * 5, -1, 0);
         glVertex3f(10 + i * 5, 1, 0);
-
-
     }
 
     for(int i = -10; i < ArraySize/10; i++)
@@ -211,14 +208,13 @@ void DisplayChart()
 	
     glEnd();
 
-
     //(1) Отладочная ось - отображение пробела символ 32
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
 								// прерывистую линию
     glLineStipple(2,6);    		// устанавливаем маску
-    // пояснения см. ниже
+	
     glBegin(GL_LINE_LOOP);
     glColor3d(0,0,1);
         glVertex3f(0, 32, 0);
@@ -226,20 +222,17 @@ void DisplayChart()
     glEnd();
     //(/1)
 
-
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
                                 // прерывистую линию
     glLineStipple(2,6);    		// устанавливаем маску
-    // пояснения см. ниже
+    
     glBegin(GL_LINE_LOOP);
     glColor3d(0,0,1);
         glVertex3f(50, ArraySize, 0);
         glVertex3f(50, 0, 0);
     glEnd();
-
-
 
     glDisable(GL_LINE_SMOOTH);
     glDisable(GL_LINE_STIPPLE);
@@ -248,7 +241,6 @@ void DisplayChart()
 	//-- Рисование точек графика функции
 	//--
 	glBegin(GL_POINTS); // 
-    //glColor3f(0.13, 0.67, 0.82);
     glColor3f(1.0, 1.0, 1.0);
     
 	float y;
@@ -272,8 +264,6 @@ void DisplayChart()
     
 	glEnd();
 
-
-
     glColor3f(1,1,0);
 	
 	//--
@@ -286,9 +276,10 @@ void DisplayChart()
 	//--
 	//-- Отрисовка букв подписи
 	//--
-    for (int it=0; it<text.size(); it++)
+    for (int it = 0; it < text.size(); it++)
+	{
         glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
-
+	}
 
 	//--
 	//--Отрисовываем циферное обозначение координат X-ов
@@ -299,9 +290,10 @@ void DisplayChart()
 		
         glRasterPos2f(i * 5, 3);
 
-        for (int it=0; it<text.size(); it++)
+        for (int it = 0; it < text.size(); it++)
+		{
             glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
-
+		}
     }
 
 	//--
@@ -313,8 +305,10 @@ void DisplayChart()
 
         glRasterPos2f( 0.5, i * 10);
 
-        for (int it=0; it<text.size(); it++)
+        for (int it = 0; it < text.size(); it++)
+		{
             glutBitmapCharacter((int*)GLUT_BITMAP_8_BY_13, (int)text[it]);
+		}
     }
 
 	//--
@@ -336,24 +330,18 @@ double getAgent(int i, int j, bool Up)
 
 int GetDistance()
 {
-	
-    int i = 0;
-	
-    i = ptr_UpVortex->getDistance();
+    int i 	= 0;	
+    i 		= ptr_UpVortex->getDistance();
 
     return i;
-	
 }
 
 double GetBuf()
 {
-	
-    double i = 0;
-	
-    i = ptr_UpVortex->getBuf();
+    double i	= 0;
+    i 			= ptr_UpVortex->getBuf();
 
-    return i;
-	
+    return i;	
 }
 
 

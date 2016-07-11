@@ -1,9 +1,11 @@
+
 #include "Pole.h"
 #include <algorithm>
 
 
 Pole::Pole()
 {
+	
 }
 
 //--
@@ -69,7 +71,6 @@ bool Pole::easeAllBonds()
     }
 
     return false;
-
 }
 
 double Pole::getValue() const

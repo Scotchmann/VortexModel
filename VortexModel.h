@@ -15,18 +15,20 @@ typedef vector<InertialVector * > CumulativeVector;
 
 struct ForecastedValue
 {
-	int value;
-	double reliability;
+    double  value;
+    double  reliability;
+    double  distance;
 };
 
 ///--
 ///--Инициализирует вихрь
 ///--
-void InitializeVortex( int 	ArrSize 		    = 0, 	// Количество колец
-                       double 	Step 			= 0, 	// Шаг в процентах между полюсами
-                       int 	MaxSizeOfRing 	    = 0, 	// Максимальный размер кольца
-                       double 	EasingRatio 	= 0, 	// Коэффициент ослабления
-                       double 	strengthen_step = 0		// Шаг укрепления связи
+void InitializeVortex(
+						int 	ArrSize 		= 0, 	// Количество колец
+						double 	Step 			= 0, 	// Шаг в процентах между полюсами
+						int 	MaxSizeOfRing 	= 0, 	// Максимальный размер кольца
+						double 	EasingRatio 	= 0, 	// Коэффициент ослабления
+						double 	strengthen_step	= 0		// Шаг укрепления связи
                      );
 
 ///--

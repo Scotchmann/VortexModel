@@ -9,7 +9,6 @@ Bond::Bond()
 
 Bond::Bond(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step )
 {
-    ptr_source_Pole = source_Pole;
     ptr_target_Pole = target_Pole;
     d_easing_Ratio = easing_Ratio;
     d_reliability = 1;
@@ -27,9 +26,11 @@ Bond::~Bond()
 bool Bond::Strengthen(double Step)
 {
     ///--
-    ///--Укрепляем пока значение мешьне максимального размера типа
+    ///--Укрепляем пока значение меньше максимального размера типа
     ///--
+
     double _Step = d_strengthen_Step;
+
     if (Step > 0)
     {
         _Step = Step;
@@ -50,11 +51,8 @@ bool Bond::Strengthen(double Step)
 ///--
 bool Bond::Ease()
 {
-
     d_reliability = d_reliability - ((double)d_strengthen_Step * d_easing_Ratio);
-
     return false;
-
 }
 
 double Bond::getReliability() const

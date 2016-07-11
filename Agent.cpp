@@ -1,14 +1,14 @@
-#include "Agent.h"
 
+#include "Agent.h"
 
 Agent::Agent()
 {
 
 }
 
-
 Agent::~Agent()
 {
+	
 }
 
 double Agent::getValue() const

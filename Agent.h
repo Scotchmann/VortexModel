@@ -1,7 +1,7 @@
 #ifndef VORTEXMODEL_LINUX_AGENT_H
 #define VORTEXMODEL_LINUX_AGENT_H
 
-#include "differentialset.h"
+#include "DifferentialSet.h"
 
 
 class Agent
@@ -46,18 +46,14 @@ public:
     //--
     void setDifferential(DifferentialSet differential);
 
-    //--
-	//--Получает принятый прогноз
-    //--
-    double getReceivedForecast() const;
-
-    //--
-	//--Устанавливает принятый прогноз
-    //--
-    void setReceivedForecast(double ReceivedForecast);
-
 
 private:
+
+//_______________________________________________________________________________________________
+
+	//--
+	//--Приватные поля
+	//--
 
     double          d_value;            //
     DifferentialSet d_differential;     //
