@@ -34,10 +34,10 @@ public:
     //--Публичные методы
     //--
     
-	bool 	Strengthen	   	(double Step = 0);  // Укрепить связь
-    bool 	Ease		   	();                 // Ослабить связь
-    double 	getReliability	() const;           // Получить надежность
-    Pole * 	getTargetPole	();                 // Получить целевой полюс
+	bool 	Strengthen	   	(double Step = 0);  // укрепить связь
+    bool 	Ease		   	();                 // ослабить связь
+    double 	getReliability	() const;           // получить надежность
+    Pole * 	getTargetPole	();                 // получить целевой полюс
 
 private:
 
@@ -46,12 +46,12 @@ private:
     //--
     //--Приватные поля
     //--
-	//Pole * ptr_source_Pole = nullptr;			// Полюс источник
-    double d_strengthen_Step;					// Шаг укрепления
-    double d_easing_Ratio;						// Коэффициент ослабления
-    double d_reliability;				       	// Надежность
-    double d_maxDouble;							// Максимальное значение типа
-    Pole * ptr_target_Pole = nullptr;	       	// Целевой полюс
+	//Pole * ptr_source_Pole = nullptr;			// полюс источник
+    double d_strengthen_Step;					// шаг укрепления
+    double d_easing_Ratio;						// коэффициент ослабления
+    double d_reliability;				       	// надежность
+    double d_maxDouble;							// максимальное значение типа
+    Pole * ptr_target_Pole = nullptr;	       	// целевой полюс
 };
 
 #endif //VORTEXMODEL_LINUX_BOND_H

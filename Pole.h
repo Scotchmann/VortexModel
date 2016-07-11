@@ -45,14 +45,14 @@ public:
     //--Публичные методы
     //--
 	
-    bool            sortSourceConnections      	();
-    bool            easeAllBonds               	();
-    double          getValue                 	() const;
-    double          getCumulativeReliability	() const;
-    void            setDifferential             (DifferentialSet differential);
-    DifferentialSet getDifferential             () const;
-    double          get_b_forecast              ();
-    double          get_c_forecast              ();
+    bool            sortSourceConnections   ();
+    bool            easeAllBonds            ();
+    double          getValue                () const;
+    double          getCumulativeReliability() const;
+    void            setDifferential         (DifferentialSet differential);
+    DifferentialSet getDifferential         () const;
+    double          get_b_forecast          ();
+    double          get_c_forecast          ();
 
 
 private:
@@ -63,8 +63,8 @@ private:
     //--Приватные поля
     //--
 	
-    double  d_value;                    // Значение
-    DifferentialSet  d_differential; 	// Дифференциал
+    double  d_value;                    // значение
+    DifferentialSet  d_differential; 	// дифференциал
 	
 //_______________________________________________________________________________________________
 

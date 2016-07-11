@@ -41,8 +41,6 @@ bool Bond::Strengthen(double Step)
         d_reliability = d_reliability + _Step;
     }
 
-    //d_reliability = 1;
-
     return false;
 }
 

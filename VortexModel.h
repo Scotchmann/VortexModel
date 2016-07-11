@@ -24,11 +24,11 @@ struct ForecastedValue
 ///--Инициализирует вихрь
 ///--
 void InitializeVortex(
-						int 	ArrSize 		= 0, 	// Количество колец
-						double 	Step 			= 0, 	// Шаг в процентах между полюсами
-						int 	MaxSizeOfRing 	= 0, 	// Максимальный размер кольца
-						double 	EasingRatio 	= 0, 	// Коэффициент ослабления
-						double 	strengthen_step	= 0		// Шаг укрепления связи
+						int 	ArrSize 		= 0, 	// количество колец
+						double 	Step 			= 0, 	// шаг в процентах между полюсами
+						int 	MaxSizeOfRing 	= 0, 	// максимальный размер кольца
+						double 	EasingRatio 	= 0, 	// коэффициент ослабления
+						double 	strengthen_step	= 0		// шаг укрепления связи
                      );
 
 ///--

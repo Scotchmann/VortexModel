@@ -80,7 +80,7 @@ double Pole::getValue() const
 
 double Pole::getCumulativeReliability() const
 {
-    double cumulative_reliability = 0;	// Куммулятивная надежность полюса
+    double cumulative_reliability = 0;	// куммулятивная надежность полюса
     
 	//--
 	//--Собираем куммулятивную надежность

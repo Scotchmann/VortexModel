@@ -6,15 +6,15 @@ using namespace std;
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-int 	    ArraySize 	= 600;			// Размер массива
-int 		counter 	= 1;			// Счетчик
-int 		_count 		= 0;    		// Размер масива У,Х
+int 	    ArraySize 	= 600;			// размер массива
+int 		counter 	= 1;			// счетчик
+int 		_count 		= 0;    		// размер масива У,Х
 
 double* 	X;           				// масив для хранение х-ов
 double* 	Y;           				// масив для хранения у-ов
 
-int			DisplayX 	= 1600;			// Ширина окна 
-int 		DisplayY	= 800;			// Высота окна 
+int			DisplayX 	= 1600;			// ширина окна 
+int 		DisplayY	= 800;			// высота окна 
 
 double      d_maximal_reliability = 0; 	// максимальная надежность
 
@@ -25,11 +25,11 @@ CumulativeVector _CumulativeContainer;
 //--Инициализация вихря
 //--
 void InitializeVortex(
-						int 	ArrSize 		 , 		// Размер массива
-						double 	Step 			 , 		// Шаг в процентах между полюсами
-						int 	MaxSizeOfRing 	 , 		// Максимальный размер кольца
-						double 	EasingRatio 	 , 	    // Коэффициент ослабления
-						double 	strengthen_step  		// Шаг укрепления связи
+						int 	ArrSize 		 , 		// размер массива
+						double 	Step 			 , 		// шаг в процентах между полюсами
+						int 	MaxSizeOfRing 	 , 		// максимальный размер кольца
+						double 	EasingRatio 	 , 	    // коэффициент ослабления
+						double 	strengthen_step  		// шаг укрепления связи
                      )
 {   
 	if(ArrSize > 0)
@@ -114,8 +114,6 @@ ForecastedValue pushAgent(double value, bool Up)
     }
 
     return FCV;
-
-    //return d_result;
 }
 
 //--
@@ -124,8 +122,8 @@ ForecastedValue pushAgent(double value, bool Up)
 int DrawChart(CumulativeVector * _CumuCon)
 {
     
-	vector<double> arrY;  // Вектор х-ов
-    vector<double> arrX;  // Вектор y-ов
+	vector<double> arrY;  // вектор х-ов
+    vector<double> arrX;  // вектор y-ов
 
 	//--
 	//--Формируем координаты для куммулятивного вектора прогноза
@@ -135,14 +133,14 @@ int DrawChart(CumulativeVector * _CumuCon)
 		if( ((CumulativeVector)(*_CumuCon))[i]->getValue() > 0	&&	((CumulativeVector)(*_CumuCon))[i]->getReliability() > 0)
 		{		
 			
-            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );		// Формируем уровни треугольной матрицы на графике
-            arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// Формируем уровни надежности на графике
+            arrY.push_back(((CumulativeVector)(*_CumuCon))[i]->getDistance() );		// формируем уровни треугольной матрицы на графике
+            arrX.push_back(((CumulativeVector)(*_CumuCon))[i]->getReliability()  );	// формируем уровни надежности на графике
 
 		}
     }
 	
-    X = new double[arrX.size()];  // Создание масива с х
-    Y = new double[arrY.size()];  // Создание масива с У
+    X = new double[arrX.size()];  // создание масива с х
+    Y = new double[arrY.size()];  // создание масива с У
 
     for(int j = 0; j < arrX.size(); j++)
     {
@@ -211,8 +209,7 @@ void DisplayChart()
     //(1) Отладочная ось - отображение пробела символ 32
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
-								// прерывистую линию
+    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать прерывистую линию
     glLineStipple(2,6);    		// устанавливаем маску
 	
     glBegin(GL_LINE_LOOP);
@@ -224,8 +221,7 @@ void DisplayChart()
 
     glLineWidth(0.01);
     glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать
-                                // прерывистую линию
+    glEnable(GL_LINE_STIPPLE); 	// разрешаем рисовать прерывистую линию 
     glLineStipple(2,6);    		// устанавливаем маску
     
     glBegin(GL_LINE_LOOP);
@@ -269,7 +265,7 @@ void DisplayChart()
 	//--
 	//--Отрисовываем подпись графика
 	//--
-    string text = "dynamic plot";				// текст подписи
+    string text = "dynamic plot";			// текст подписи
 
     glRasterPos2f(100 - 6, ArraySize - 5 );	// положение текста
 
@@ -303,7 +299,7 @@ void DisplayChart()
     {
         string text = to_string(i*10);
 
-        glRasterPos2f( 0.5, i * 10);
+        glRasterPos2f(0.5, i * 10);
 
         for (int it = 0; it < text.size(); it++)
 		{
@@ -320,10 +316,7 @@ void DisplayChart()
 double getAgent(int i, int j, bool Up)
 {
     double size = 0;
-
-    //Up ? size = AgentsUpTrend[i][j].InnerAgent->mutation_percentage : size = AgentsDownTrend[i][j].InnerAgent->mutation_percentage;
-
-    size = ptr_UpVortex->getAgent(i, j);
+    size 		= ptr_UpVortex->getAgent(i, j);
 
     return size;
 }

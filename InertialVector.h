@@ -11,28 +11,32 @@ class InertialVector
 
 public:
 
+//_______________________________________________________________________________________________
+
 	//--
 	//--Публичные методы
 	//--
 	
-    double  getValue		() const;               // Получает значение
-    void    setValue		(double value);         // Устанавливает значение
+    double  getValue		() const;               // получает значение
+    void    setValue		(double value);         // устанавливает значение
 
-    double  getReliability	() const;               // Получает надежность
-    void    setReliability	(double reliability);   // Устанавливает надежность
+    double  getReliability	() const;               // получает надежность
+    void    setReliability	(double reliability);   // устанавливает надежность
 
-    int     getDistance		() const;               // Получает дистанцию
-    void    setDistance		(int distance);         // Устанавливает дистанцию
+    int     getDistance		() const;               // получает дистанцию
+    void    setDistance		(int distance);         // устанавливает дистанцию
 
 private:
+
+//_______________________________________________________________________________________________
 
 	//--
 	//--Приватные поля
 	//--
 	
-    double  d_value;        // Значение инерции
-    double  d_reliability;  // Надежность инерции
-    int     i_distance;	    // Дистанция инерции
+    double  d_value;        // значение инерции
+    double  d_reliability;  // надежность инерции
+    int     i_distance;	    // дистанция инерции
 };
 
 
