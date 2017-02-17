@@ -2,6 +2,7 @@
 #define VORTEXMODEL_LINUX_POLE_H
 
 #include <vector>
+#include <queue>
 #include "Bond.h"
 #include "DifferentialSet.h"
 
@@ -38,6 +39,9 @@ public:
     //--
 	
     vector<Bond*> 	Connections;
+    queue<Bond*>    BondsQueue;
+    double TotalRepeatsCounter;
+	int TotalConnectionCounter;
 
 //_______________________________________________________________________________________________
 	

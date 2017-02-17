@@ -1,0 +1,10 @@
+.idea/ 
+.directory
+.idea/VortexModel_linux.iml
+.idea/workspace.xml
+ProcessData_84460.txt
+.kdev4/
+.project
+VortexModel_linux.kdev4 
+CMakeLists.txt.user
+build/ 

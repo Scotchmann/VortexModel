@@ -73,15 +73,16 @@ int ProcessChars()
 
 	BooksToRead.push_back("/home/vortex/ClionProjects/Leo");
 	BooksToRead.push_back("/home/vortex/ClionProjects/Deas_thief_takers_apprentice_2_Warlocks_shadow_RuLit_Net.txt");
+    BooksToRead.push_back("/home/vortex/ClionProjects/Schwarze_Alien_Domicile_Escape_Area_51_RuLit_Me.txt");
 
     //--
     //--Инициализируем вихрь
     //--
     InitializeVortex(
-                        1200,       // размерность матрицы
+                        80,       // размерность матрицы
                         0.025, 		// шаг в процентах между полюсами
                         1000,       // максимальный размер кольца
-                        0.0001,     // коэффициент ослабления
+                        0.001,     // коэффициент ослабления
                         1           // шаг укрепления связи
 					);
 
@@ -95,6 +96,11 @@ int ProcessChars()
     string 	s;     					// сюда будем ложить считанную строку
 	ForecastedValue FCV_G; 			// Полученный прогноз
 	
+    for(int times_counter = 0; times_counter < 3; times_counter++)
+    {
+
+
+
     for(int book_number = 0; book_number < BooksToRead.size(); book_number++)
 	{
 		ifstream file(BooksToRead[book_number]);   // файл из которого читаем
@@ -107,7 +113,7 @@ int ProcessChars()
 			//--
 			//--Отладочная проверка
 			//--
-			if (i_counter == 9998)				
+            if (i_counter > 3000)
 			{										
 				int b = 0;						 
 				//break;
@@ -132,10 +138,12 @@ int ProcessChars()
 				//--
                 cout << cstr[i] << "\t " << ((int)cstr[i]) 			// номер символа
 								<< "\t " << nextchar 				// символ
+                                << "\t " << (char)nextchar			// символ
 								<< "\t " << reliability << "% " 	// надежность в процентах
 								<< "\t " << distance 				// дистанция
 								<< "\t " << (int)i_counter 			// счетчик всего перебранных символов
-								<< "\t " << total_counter << endl;	// счетчик совпадений
+                                << "\t " << total_counter           // счетчик совпадений
+                                << "\t " << (double)(((double)total_counter) / i_counter * 100) << endl;
 				
 				FCV_G = pushAgent(value_to_push, true);	// заводим значение в модель
 				nextchar 	=	(int)FCV_G.value; 		// значение
@@ -147,7 +155,9 @@ int ProcessChars()
 		}
 
 		file.close(); // закрываем файл
-	}
+        }
+
+     }
 
     return 0;
 }

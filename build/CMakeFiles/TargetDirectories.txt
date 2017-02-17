@@ -1,0 +1,3 @@
+/home/vortex/Dropbox/VortexModel_linux/build/CMakeFiles/edit_cache.dir
+/home/vortex/Dropbox/VortexModel_linux/build/CMakeFiles/rebuild_cache.dir
+/home/vortex/Dropbox/VortexModel_linux/build/CMakeFiles/VortexModel_linux.dir

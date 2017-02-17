@@ -49,7 +49,7 @@ bool Bond::Strengthen(double Step)
 ///--
 bool Bond::Ease()
 {
-    d_reliability = d_reliability - ((double)d_strengthen_Step * d_easing_Ratio);
+    d_reliability = d_reliability - d_strengthen_Step;
     return false;
 }
 

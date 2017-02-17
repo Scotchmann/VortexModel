@@ -6,7 +6,7 @@ using namespace std;
 Vortex * ptr_UpVortex;
 Vortex * ptr_DownVortex;
 
-int 	    ArraySize 	= 600;			// размер массива
+int 	    ArraySize 	= 100;			// размер массива
 int 		counter 	= 1;			// счетчик
 int 		_count 		= 0;    		// размер масива У,Х
 
@@ -92,10 +92,10 @@ ForecastedValue pushAgent(double value, bool Up)
     DrawChart(&_CumulativeContainer);
 
     double result_value = 0;
-    int    result_reliab = 0;
+    double result_reliab = 0;
 
 
-    for(int i = 0; i < 160; i++)
+    for(int i = 0; i < ArraySize; i++)
     {
         double cum_reliab = 0;
         int    cum_count  = 0;
@@ -104,11 +104,12 @@ ForecastedValue pushAgent(double value, bool Up)
 
         for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
         {
-            if (_CumulativeContainer[j]->getReliability() > result_reliab)
+            double relative_reliab = _CumulativeContainer[j]->getReliability() * (  (double)(_CumulativeContainer[j]->getDistance()) / ArraySize);
+            if (relative_reliab > result_reliab)
             {
-                FCV.reliability = result_reliab = _CumulativeContainer[j]->getReliability();
+                FCV.reliability = result_reliab = relative_reliab;
                 FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
-                FCV.distance    = _CumulativeContainer[j]->getDistance();;
+                FCV.distance    = _CumulativeContainer[j]->getDistance();
             }
         }
     }
