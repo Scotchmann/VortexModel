@@ -33,3 +33,13 @@ void InertialVector::setDistance(int distance)
 {
     InertialVector::i_distance = distance;
 }
+
+int InertialVector::getVariability() const
+{
+    return i_variability;
+}
+
+void InertialVector::setVariability(int variability)
+{
+    InertialVector::i_variability = variability;
+}

@@ -56,7 +56,7 @@ void InitializeVortex(
     glLoadIdentity			();
 
     //ArraySize = 180;
-    ArraySize = ArraySize/2;
+    //ArraySize = ArraySize/2;
 
     glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
 }
@@ -95,16 +95,26 @@ ForecastedValue pushAgent(double value, bool Up)
     double result_reliab = 0;
 
 
-    for(int i = 0; i < ArraySize; i++)
-    {
+//    for(int i = 0; i < ArraySize; i++)
+//    {
         double cum_reliab = 0;
         int    cum_count  = 0;
         double val        = 0;
         int    dist       = 0;
 
+        int    max_variability = 0;
+
         for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
         {
-            double relative_reliab = _CumulativeContainer[j]->getReliability() * (  (double)(_CumulativeContainer[j]->getDistance()) / ArraySize);
+            if(max_variability < _CumulativeContainer[j]->getVariability())
+            {
+                max_variability = _CumulativeContainer[j]->getVariability();
+            }
+        }
+
+        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
+        {
+            double relative_reliab = _CumulativeContainer[j]->getReliability() * (  (double)(_CumulativeContainer[j]->getDistance()) / ArraySize)  * ((double)(_CumulativeContainer[j]->getVariability()) / max_variability);
             if (relative_reliab > result_reliab)
             {
                 FCV.reliability = result_reliab = relative_reliab;
@@ -112,7 +122,7 @@ ForecastedValue pushAgent(double value, bool Up)
                 FCV.distance    = _CumulativeContainer[j]->getDistance();
             }
         }
-    }
+//    }
 
     return FCV;
 }

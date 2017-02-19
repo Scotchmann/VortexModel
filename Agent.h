@@ -2,6 +2,7 @@
 #define VORTEXMODEL_LINUX_AGENT_H
 
 #include "DifferentialSet.h"
+#include "Pole.h"
 
 
 class Agent
@@ -45,6 +46,9 @@ public:
     //--Устанавливает дифференциал
     //--
     void setDifferential(DifferentialSet differential);
+	
+	Pole  * CorrespondingPole;
+	Agent * B_Agent;
 
 
 private:
@@ -58,6 +62,7 @@ private:
     double          d_value;            //
     DifferentialSet d_differential;     //
     Agent *         InnerAgent;         //
+	
 
 };
 

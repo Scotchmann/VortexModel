@@ -83,7 +83,7 @@ private:
 	
     void 		        RecalculationOfMainPool	(int, int, AgentsArray *, int, CumulativeVector *);				// пересчет основного пула треугольной матрицы
     InertialVector *	PushToPolesRing			(int level, Agent * CurrenAgent, Agent * prev_Agent = nullptr);	// заведение значения в кольцо
-    InertialVector *	ProcessPole				(Pole *_pole, double value, int level);							// обработка полюса
+    InertialVector *	ProcessPole				(Pole *_pole, double value, int level, Agent* CurrenAgent);							// обработка полюса
     void				AddNewPoleToPolesRing	(int level, Pole * _pole, bool isToPush, int index = 0);		// заведение нового полюса в кольцо
 
 

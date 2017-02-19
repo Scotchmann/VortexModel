@@ -25,6 +25,9 @@ public:
 
     int     getDistance		() const;               // получает дистанцию
     void    setDistance		(int distance);         // устанавливает дистанцию
+	
+	int     getVariability	() const;               // получает вариативность
+    void    setVariability	(int variability);      // устанавливает вариативность
 
 private:
 
@@ -37,6 +40,7 @@ private:
     double  d_value;        // значение инерции
     double  d_reliability;  // надежность инерции
     int     i_distance;	    // дистанция инерции
+    int		i_variability;   // вариативность
 };
 
 

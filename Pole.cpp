@@ -25,21 +25,30 @@ Pole::~Pole()
     //--
     //--Удаляем все связи в удаляемом полюсе
     //--
-    mark_1:
-    for (auto it = Connections.begin(); it != Connections.end(); ++it)
-    {
-        delete *it;
-        Connections.erase(it);  // удаляем элемент из контейнера
-        goto mark_1;
-    }
+	
+	mark_1:
+	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	{
+		mark_2:
+        for (auto it_j = (*it_i)->Connections.begin(); it_j !=  (*it_i)->Connections.end(); ++it_j)
+		{
+			delete *it_j;
+            ((Context*)(*it_i))->Connections.erase(it_j);  // удаляем элемент из контейнера
+			goto mark_2;
+		}
+		
+		delete *it_i;
+	    Contexts.erase(it_i);
+		goto mark_1;
+	}
 }
 
 //--
 //--Сортирует связи полюса
 //--
-bool Pole::sortSourceConnections()
+bool Pole::sortSourceConnections(Context * PassedContext)
 {
-    sort(Connections.begin(), Connections.end(), BondComparatorObject);
+	sort(PassedContext->Connections.begin(), PassedContext->Connections.end(), BondComparatorObject);
     return true;
 }
 
@@ -51,24 +60,38 @@ bool Pole::easeAllBonds()
     //--
     //--1. Собственно ослабляем все связи
     //--
-    for (auto it = Connections.begin(); it != Connections.end(); ++it)
-    {
-        (*it)->Ease();
-    }
+	
+	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	{
+        for (auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
+		{
+			(*it_j)->Ease();
+		}
+	}
 
     //--
     //--2. Удаляем отмершие связи у полюса
     //--
-    mark_2:
-    for (auto it = Connections.begin(); it != Connections.end(); ++it)
-    {
-        if ((*it)->getReliability() <= 0)
-        {
-            delete *it;
-            Connections.erase(it);
-            goto mark_2;
-        }
-    }
+	
+	mark_3:
+	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	{
+	
+		mark_4:
+        for (auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
+		{
+			if ((*it_j)->getReliability() <= 0)
+			{
+				delete *it_j;
+                (*it_i)->Connections.erase(it_j);
+				goto mark_4;
+			}
+		}
+
+		delete *it_i;
+		Contexts.erase(it_i);
+        goto mark_3;
+	}
 
     return false;
 }
@@ -85,10 +108,14 @@ double Pole::getCumulativeReliability() const
 	//--
 	//--Собираем куммулятивную надежность
 	//--
-	for(auto c_it = Connections.begin(); c_it != Connections.end(); ++c_it)
-    {
-        cumulative_reliability = cumulative_reliability + (*c_it)->getReliability();
-    }
+	
+	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	{
+        for(auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
+		{
+			cumulative_reliability = cumulative_reliability + (*it_j)->getReliability();
+		}
+	}
 	
     return cumulative_reliability;
 }

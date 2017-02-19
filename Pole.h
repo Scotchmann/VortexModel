@@ -10,6 +10,15 @@ using namespace std;
 
 class Bond;
 
+struct Context
+{
+	Pole * ContextPole;
+	vector<Bond*> Connections;
+	queue<Bond*>    BondsQueue;
+	double TotalRepeatsCounter;
+	int TotalConnectionCounter;
+};
+
 class Pole
 {
 
@@ -38,10 +47,9 @@ public:
     //--Публичные поля
     //--
 	
-    vector<Bond*> 	Connections;
-    queue<Bond*>    BondsQueue;
-    double TotalRepeatsCounter;
-	int TotalConnectionCounter;
+    vector<Context*> Contexts;
+   
+   
 
 //_______________________________________________________________________________________________
 	
@@ -49,7 +57,7 @@ public:
     //--Публичные методы
     //--
 	
-    bool            sortSourceConnections   ();
+    bool            sortSourceConnections   (Context*);
     bool            easeAllBonds            ();
     double          getValue                () const;
     double          getCumulativeReliability() const;
