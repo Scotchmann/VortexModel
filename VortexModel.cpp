@@ -46,19 +46,19 @@ void InitializeVortex(
     int argc 		= 0;
     char ** argv 	= nullptr;
 	
-    glutInit				(&argc, argv);
-    glutInitDisplayMode		(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize		(DisplayX, DisplayY);
-    glutInitWindowPosition	(20, 810);
-    glutCreateWindow		("vortex model");
-    glClearColor			(0.0, 0.0, 0.0, 0);
-    glMatrixMode			(GL_PROJECTION);
-    glLoadIdentity			();
+//    glutInit				(&argc, argv);
+//    glutInitDisplayMode		(GLUT_DOUBLE | GLUT_RGB);
+//    glutInitWindowSize		(DisplayX, DisplayY);
+//    glutInitWindowPosition	(20, 810);
+//    glutCreateWindow		("vortex model");
+//    glClearColor			(0.0, 0.0, 0.0, 0);
+//    glMatrixMode			(GL_PROJECTION);
+//    glLoadIdentity			();
 
-    //ArraySize = 180;
-    //ArraySize = ArraySize/2;
+//    //ArraySize = 180;
+//    //ArraySize = ArraySize/2;
 
-    glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
+//    glOrtho(-2, 100.5, -2, ArraySize + 0.5, -100, 100);
 }
 
 //--
@@ -89,40 +89,47 @@ ForecastedValue pushAgent(double value, bool Up)
     Up ? ptr_PrimalVortex = ptr_UpVortex : ptr_PrimalVortex = ptr_DownVortex;
 
     double d_result = ptr_PrimalVortex->pushAgent(value, &_CumulativeContainer);
-    DrawChart(&_CumulativeContainer);
+//    DrawChart(&_CumulativeContainer);
 
     double result_value = 0;
     double result_reliab = 0;
 
 
-//    for(int i = 0; i < ArraySize; i++)
-//    {
-        double cum_reliab = 0;
-        int    cum_count  = 0;
-        double val        = 0;
-        int    dist       = 0;
+	double cum_reliab = 0;
+	int    cum_count  = 0;
+	double val        = 0;
+	int    dist       = 0;
 
-        int    max_variability = 0;
+	int    max_variability = 0;
 
-        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
-        {
-            if(max_variability < _CumulativeContainer[j]->getVariability())
-            {
-                max_variability = _CumulativeContainer[j]->getVariability();
-            }
-        }
+	//--
+	//--Вычисляем максимальную вариативность пришедшего ответа
+	//--
+	for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
+	{
+		if(max_variability < _CumulativeContainer[j]->getVariability())
+		{
+			max_variability = _CumulativeContainer[j]->getVariability();
+		}
+	}
 
-        for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
-        {
-            double relative_reliab = _CumulativeContainer[j]->getReliability() * (  (double)(_CumulativeContainer[j]->getDistance()) / ArraySize)  * ((double)(_CumulativeContainer[j]->getVariability()) / max_variability);
-            if (relative_reliab > result_reliab)
-            {
-                FCV.reliability = result_reliab = relative_reliab;
-                FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
-                FCV.distance    = _CumulativeContainer[j]->getDistance();
-            }
-        }
-//    }
+	//--
+	//--Вычисляем относительную надежность
+	//--
+	for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
+	{
+        double relative_reliab = _CumulativeContainer[j]->getReliability();//*
+        //((double)(_CumulativeContainer[j]->getDistance())    / ArraySize )  ;//*
+        //((double)(_CumulativeContainer[j]->getVariability()) / max_variability);
+		
+		
+        if (relative_reliab >= result_reliab)
+		{
+			FCV.reliability = result_reliab = relative_reliab;
+			FCV.value 		= result_value  = _CumulativeContainer[j]->getValue();
+			FCV.distance    = _CumulativeContainer[j]->getDistance();
+		}
+	}
 
     return FCV;
 }

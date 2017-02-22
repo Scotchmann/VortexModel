@@ -4,6 +4,14 @@
 
 #include "InertialVector.h"
 
+InertialVector::InertialVector()
+{
+	d_value 		= 0;
+	d_reliability 	= 0;
+	i_distance 		= 0;
+	i_variability 	= 0;
+}
+
 double InertialVector::getValue() const
 {
     return d_value;
@@ -11,7 +19,7 @@ double InertialVector::getValue() const
 
 void InertialVector::setValue(double value)
 {
-    InertialVector::d_value = value;
+    d_value = value;
 }
 
 double InertialVector::getReliability() const
@@ -21,7 +29,7 @@ double InertialVector::getReliability() const
 
 void InertialVector::setReliability(double reliability)
 {
-    InertialVector::d_reliability = reliability;
+    d_reliability = reliability;
 }
 
 int InertialVector::getDistance() const
@@ -31,7 +39,7 @@ int InertialVector::getDistance() const
 
 void InertialVector::setDistance(int distance)
 {
-    InertialVector::i_distance = distance;
+    i_distance = distance;
 }
 
 int InertialVector::getVariability() const
@@ -41,5 +49,5 @@ int InertialVector::getVariability() const
 
 void InertialVector::setVariability(int variability)
 {
-    InertialVector::i_variability = variability;
+    i_variability = variability;
 }
