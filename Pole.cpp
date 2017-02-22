@@ -14,7 +14,7 @@ Pole::Pole()
 Pole::Pole(double value, DifferentialSet differential)
 {
     d_value 		= value;
-	d_differential 	= differential;
+    d_differential = differential;
 }
 
 //--
@@ -25,20 +25,11 @@ Pole::~Pole()
     //--
     //--Удаляем все связи в удаляемом полюсе
     //--
-	
 	mark_1:
-	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	for (auto it = Connections.begin(); it !=  Connections.end(); ++it)
 	{
-		mark_2:
-        for (auto it_j = (*it_i)->Connections.begin(); it_j !=  (*it_i)->Connections.end(); ++it_j)
-		{
-			delete *it_j;
-            ((Context*)(*it_i))->Connections.erase(it_j);  // удаляем элемент из контейнера
-			goto mark_2;
-		}
-		
-		delete *it_i;
-	    Contexts.erase(it_i);
+		delete *it;
+		Connections.erase(it);  // удаляем элемент из контейнера
 		goto mark_1;
 	}
 }
@@ -46,9 +37,9 @@ Pole::~Pole()
 //--
 //--Сортирует связи полюса
 //--
-bool Pole::sortSourceConnections(Context * PassedContext)
+bool Pole::sortSourceConnections()
 {
-	sort(PassedContext->Connections.begin(), PassedContext->Connections.end(), BondComparatorObject);
+	sort(Connections.begin(), Connections.end(), BondComparatorObject);
     return true;
 }
 
@@ -60,37 +51,24 @@ bool Pole::easeAllBonds()
     //--
     //--1. Собственно ослабляем все связи
     //--
-	
-	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	for (auto it = Connections.begin(); it != Connections.end(); ++it)
 	{
-        for (auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
-		{
-			(*it_j)->Ease();
-		}
+		(*it)->Ease();
 	}
+
 
     //--
     //--2. Удаляем отмершие связи у полюса
     //--
-	
-	mark_3:
-	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+	mark_2:
+	for (auto it = Connections.begin(); it != Connections.end(); ++it)
 	{
-	
-		mark_4:
-        for (auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
+		if ((*it)->getReliability() <= 0)
 		{
-			if ((*it_j)->getReliability() <= 0)
-			{
-				delete *it_j;
-                (*it_i)->Connections.erase(it_j);
-				goto mark_4;
-			}
+			delete *it;
+			Connections.erase(it);
+			goto mark_2;
 		}
-
-		delete *it_i;
-		Contexts.erase(it_i);
-        goto mark_3;
 	}
 
     return false;
@@ -108,13 +86,10 @@ double Pole::getCumulativeReliability() const
 	//--
 	//--Собираем куммулятивную надежность
 	//--
-	
-	for(auto it_i = Contexts.begin(); it_i != Contexts.end(); ++it_i)
+
+	for(auto it = Connections.begin(); it != Connections.end(); ++it)
 	{
-        for(auto it_j = (*it_i)->Connections.begin(); it_j != (*it_i)->Connections.end(); ++it_j)
-		{
-			cumulative_reliability = cumulative_reliability + (*it_j)->getReliability();
-		}
+		cumulative_reliability = cumulative_reliability + (*it)->getReliability();
 	}
 	
     return cumulative_reliability;
@@ -122,7 +97,7 @@ double Pole::getCumulativeReliability() const
 
 void Pole::setDifferential(DifferentialSet differential)
 {
-    d_differential = differential;
+   
 }
 
 DifferentialSet Pole::getDifferential() const
@@ -138,6 +113,16 @@ double Pole::get_b_forecast()
 double Pole::get_c_forecast()
 {
     return d_value - d_differential.b;
+}
+
+double Pole::get_b()
+{
+    return d_differential.b;
+}
+
+double Pole::get_c()
+{
+    return d_differential.c;
 }
 
 

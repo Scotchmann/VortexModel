@@ -8,31 +8,41 @@ using namespace std;
 
 int ProcessPoints()
 {
-    double value_to_push = 0;	// для хранения входного значения
-
-    string s;                                                       		// сюда будем ложить считанные строки
-    ifstream file("/home/vortex/ClionProjects/ProcessData_84460.txt");    	// файл из которого читаем
+                                                            // сюда будем ложить считанные строки
+    ifstream file("/opt/ClionProjects/EUR_RUB__TOD.txt");    	// файл из которого читаем
 
     ///--
     ///--Инициализируем вихрь
     ///--
     InitializeVortex(
-                       0, 		//
-                       0.0005, 		// Шаг в процентах между полюсами
-                       500000, 		// Максимальный размер кольца
-                       0.00001, 	// Коэффициент ослабления
-                       1.0		// Шаг укрепления связи
+                       40, 		//
+                       0.0000, 	// Шаг в процентах между полюсами
+                       500000, 	// Максимальный размер кольца
+                       0.00001, // Коэффициент ослабления
+                       1		// Шаг укрепления связи
     );
 
 
     int i;					// отладочный счетчик
     i = 1;
 
+
+    int 	i_counter 		   = 1;		// отладочный счетчик
+    double 	nextchar  		   = 0;	   	// прогноз на следующий знак
+    int 	total_counter 	   = 0;	   	// общий подсчет совпадений
+    double 	reliability 	   = 0;	   	// надежность
+    int     distance           = 0;    	// дистанция
+
+    double 	value_to_push 	   = 0;		// для хранения входного значения
+    string 	s;     						// сюда будем ложить считанную строку
+    ForecastedValue FCV_G; 				// полученный прогноз
+    double MAXIMAL_PERCENTAGE  = 0;     // максимальный зарегистрированный процентаж
+    int prev_char              = 0;		// предыдущее заведенный символ
     double Prevval = 1;
-	
-	///--
-	///--Цикл перебора строк файла
-	///--
+
+    ///--
+    ///--Цикл перебора строк файла
+    ///--
     while (getline(file, s))
     {
         if (i == 9998)
@@ -43,23 +53,44 @@ int ProcessPoints()
 
         value_to_push = atof(s.c_str());			// нормализуем входное значение для дальнейшей обработки
 
-        if(Prevval > 0)
+
+        if( ((double)(value_to_push)) == nextchar)
         {
-            pushAgent(value_to_push/Prevval*10000, true);				// заводим значение в модель
-            cout << value_to_push/Prevval*10000 << "\t\t\t " << i << endl; 	// выводим на экран
-        }
-        else
-        {
-            pushAgent(value_to_push, true);				// заводим значение в модель
-            cout << value_to_push << "\t " << i << endl; 	// выводим на экран
+            total_counter++;
         }
 
+        double current_percentage = (double)(((double)total_counter) / i_counter * 100) ;
+        cout << "\t " << value_to_push
+             << "\t " << nextchar 				            // прогнозируемый символ
+             << "\t " << reliability << "% "                // надежность в процентах
+             << "\t " << distance                           // дистанция
+             << "\t " << (int)i_counter                     // счетчик всего перебранных символов
+             << "\t " << total_counter                      // счетчик совпадений
+             << "\t " << current_percentage << "% "			// текущий процентаж совпадений
+             << "\t " << MAXIMAL_PERCENTAGE << "% "<< endl;		// максимальный зарегистрированный процентаж
 
-        //cout << value_to_push << " " << i << endl; 	// выводим на экран
 
-        Prevval = value_to_push;
+        if(current_percentage > MAXIMAL_PERCENTAGE)
+        {
+            MAXIMAL_PERCENTAGE = current_percentage;
+        }
 
-        i++;
+        //--
+        //--Заводим значение в модель и получаем прогноз
+        //--
+        FCV_G = pushAgent(value_to_push, true);
+
+        nextchar 	=	FCV_G.value;     		// значение
+        reliability =	FCV_G.reliability;		// надежность
+        distance    =   (int)FCV_G.distance;    // дистанция
+
+        //--
+        //--Обновляем предыдущее значение
+        //--
+        prev_char = value_to_push;
+
+        i_counter++;
+
     }
 
     file.close(); // закрываем файл
@@ -222,8 +253,8 @@ int ProcessChars()
 
 int main()
 {
-    //ProcessPoints();
-    ProcessChars();
+    ProcessPoints();
+    //ProcessChars();
 
     system("pause");
     return 0;	

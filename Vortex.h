@@ -14,12 +14,11 @@
 
 using namespace std;
 
-typedef vector<InertialVector * > CumulativeVector;
-typedef vector< vector<Pole *> >  OrRing;
+typedef vector<InertialVector * > CumulativeVector;	// алиас для куммулятивного вектора
 
 class Vortex;
 
-typedef vector< vector< Agent > > AgentsArray;	// алиас для массива агентов
+typedef vector< vector< Agent > > AgentsArray;		// алиас для массива агентов
 
 class Vortex
 {
@@ -36,7 +35,7 @@ public:
     
 	Vortex	(	
 				int 	ArraySize 		= 0, 		// количество колец
-				double 	Step 			= 0.0005, 	// шаг в процентах между полюсами
+				double 	Step 			= 0.000, 	// шаг в процентах между полюсами
 				int 	MaxSizeOfRing 	= 500000, 	// максимальный размер кольца
 				double 	EasingRatio 	= 0.00001, 	// коэффициент ослабления
 				double 	strengthen_step = 1.0		// шаг укрепления связи
@@ -73,7 +72,6 @@ private:
 
 
     vector< vector<Pole *> > 	PolesRingsStack;        	// стопка колец
-    OrRing 	OrderedPolesRing;								// упорядоченное кольцо полюсов
 
 //_______________________________________________________________________________________________
 
@@ -83,7 +81,7 @@ private:
 	
     void 		        RecalculationOfMainPool	(int, int, AgentsArray *, int, CumulativeVector *);				// пересчет основного пула треугольной матрицы
     InertialVector *	PushToPolesRing			(int level, Agent * CurrenAgent, Agent * prev_Agent = nullptr);	// заведение значения в кольцо
-    InertialVector *	ProcessPole				(Pole *_pole, double value, int level, Agent* CurrenAgent);							// обработка полюса
+    InertialVector *	ProcessPole				(Pole *_pole, double value, int level, Agent* CurrenAgent);		// обработка полюса
     void				AddNewPoleToPolesRing	(int level, Pole * _pole, bool isToPush, int index = 0);		// заведение нового полюса в кольцо
 
 

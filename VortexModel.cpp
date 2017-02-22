@@ -118,7 +118,7 @@ ForecastedValue pushAgent(double value, bool Up)
 	//--
 	for(int j = 0; _CumulativeContainer.size() >0 && j < _CumulativeContainer.size(); ++j)
 	{
-        double relative_reliab = _CumulativeContainer[j]->getReliability();//*
+        double relative_reliab = _CumulativeContainer[j]->getReliability();// *
         //((double)(_CumulativeContainer[j]->getDistance())    / ArraySize )  ;//*
         //((double)(_CumulativeContainer[j]->getVariability()) / max_variability);
 		

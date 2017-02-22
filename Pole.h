@@ -10,15 +10,6 @@ using namespace std;
 
 class Bond;
 
-struct Context
-{
-	Pole * ContextPole;
-	vector<Bond*> Connections;
-	queue<Bond*>    BondsQueue;
-	double TotalRepeatsCounter;
-	int TotalConnectionCounter;
-};
-
 class Pole
 {
 
@@ -47,9 +38,10 @@ public:
     //--Публичные поля
     //--
 	
-    vector<Context*> Contexts;
-   
-   
+    vector<Bond*> Connections;
+	queue<Bond*>    BondsQueue;
+	double TotalRepeatsCounter;
+	int TotalConnectionCounter;
 
 //_______________________________________________________________________________________________
 	
@@ -57,7 +49,7 @@ public:
     //--Публичные методы
     //--
 	
-    bool            sortSourceConnections   (Context*);
+    bool            sortSourceConnections   ();
     bool            easeAllBonds            ();
     double          getValue                () const;
     double          getCumulativeReliability() const;
@@ -65,6 +57,8 @@ public:
     DifferentialSet getDifferential         () const;
     double          get_b_forecast          ();
     double          get_c_forecast          ();
+	double          get_b          ();
+    double          get_c          ();
 
 
 private:
@@ -75,8 +69,8 @@ private:
     //--Приватные поля
     //--
 	
-    double  d_value;                    // значение
-    DifferentialSet  d_differential; 	// дифференциал
+    double  d_value;                        	// значение
+    DifferentialSet d_differential; 	// дифференциал
 	
 //_______________________________________________________________________________________________
 
