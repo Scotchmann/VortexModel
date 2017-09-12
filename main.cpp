@@ -3,13 +3,15 @@
 
 #include "VortexModel.h"
 #include <cstring>
+#include <math.h>
+
 
 using namespace std;
 
 int ProcessPoints()
 {
                                                             // сюда будем ложить считанные строки
-    ifstream file("/opt/ClionProjects/EUR_RUB__TOD.txt");    	// файл из которого читаем
+    ifstream file("/home/vortex/Dropbox/VortexModel_linux/EUR_USD_5mitunes_TOD.txt");    	// файл из которого читаем
 
     ///--
     ///--Инициализируем вихрь
@@ -40,6 +42,9 @@ int ProcessPoints()
     int prev_char              = 0;		// предыдущее заведенный символ
     double Prevval = 1;
 
+    bool IsBigger = false;
+	bool IsLower  = false;
+
     ///--
     ///--Цикл перебора строк файла
     ///--
@@ -53,15 +58,27 @@ int ProcessPoints()
 
         value_to_push = atof(s.c_str());			// нормализуем входное значение для дальнейшей обработки
 
-
-        if( ((double)(value_to_push)) == nextchar)
+        if(  ((((double)(nextchar * Prevval)) > (value_to_push)) == IsBigger )  &&   ((((double)(nextchar * Prevval)) < (value_to_push)) == IsLower )   )
         {
             total_counter++;
         }
 
         double current_percentage = (double)(((double)total_counter) / i_counter * 100) ;
+
+        char _IsBigger = '!';
+        char _IsLower  = '!';
+        _IsBigger = IsBigger ? '1':'0';
+        _IsLower  = IsLower  ? '1':'0';
+
+        if (IsBigger == IsLower)
+        {
+            _IsBigger = _IsLower = '-';
+        }
+
         cout << "\t " << value_to_push
-             << "\t " << nextchar 				            // прогнозируемый символ
+             << "\t " << nextchar * Prevval           // прогнозируемый символ
+             << "\t " << _IsBigger                     //
+             << "\t " << _IsLower
              << "\t " << reliability << "% "                // надежность в процентах
              << "\t " << distance                           // дистанция
              << "\t " << (int)i_counter                     // счетчик всего перебранных символов
@@ -70,15 +87,17 @@ int ProcessPoints()
              << "\t " << MAXIMAL_PERCENTAGE << "% "<< endl;		// максимальный зарегистрированный процентаж
 
 
-        if(current_percentage > MAXIMAL_PERCENTAGE)
+        if(current_percentage > MAXIMAL_PERCENTAGE && i_counter > 500)
         {
             MAXIMAL_PERCENTAGE = current_percentage;
         }
 
+        double value_to_push_ = value_to_push / Prevval;
+
         //--
         //--Заводим значение в модель и получаем прогноз
         //--
-        FCV_G = pushAgent(value_to_push, true);
+        FCV_G = pushAgent(value_to_push_, true);
 
         nextchar 	=	FCV_G.value;     		// значение
         reliability =	FCV_G.reliability;		// надежность
@@ -87,7 +106,14 @@ int ProcessPoints()
         //--
         //--Обновляем предыдущее значение
         //--
+
+        double toRound = nextchar * value_to_push * 1000000;
+        IsBigger = (double)((int)toRound)/1000000 > value_to_push ;
+		IsLower  = (double)((int)toRound)/1000000 < value_to_push;
         prev_char = value_to_push;
+        Prevval   = value_to_push;
+
+
 
         i_counter++;
 
@@ -253,8 +279,8 @@ int ProcessChars()
 
 int main()
 {
-    ProcessPoints();
-    //ProcessChars();
+    //ProcessPoints();
+    ProcessChars();
 
     system("pause");
     return 0;	
