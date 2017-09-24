@@ -58,17 +58,26 @@ int ProcessPoints()
 
         value_to_push = atof(s.c_str());			// нормализуем входное значение для дальнейшей обработки
 
+        string _IsBigger = "!";
+        string _IsLower  = "!";
+        _IsBigger = IsBigger ? "1":"0";
+        _IsLower  = IsLower  ? "1":"0";
+
         if(  ((((double)(nextchar * Prevval)) > (value_to_push)) == IsBigger )  &&   ((((double)(nextchar * Prevval)) < (value_to_push)) == IsLower )   )
         {
+            _IsBigger = "\033[32m" + _IsBigger + "\033[0m";
+            _IsLower  = "\033[32m" + _IsLower  + "\033[0m";
             total_counter++;
+        }
+        else
+        {
+            _IsBigger = "\033[31m" + _IsBigger + "\033[0m";
+            _IsLower  = "\033[31m" + _IsLower  + "\033[0m";
         }
 
         double current_percentage = (double)(((double)total_counter) / i_counter * 100) ;
 
-        char _IsBigger = '!';
-        char _IsLower  = '!';
-        _IsBigger = IsBigger ? '1':'0';
-        _IsLower  = IsLower  ? '1':'0';
+
 
         if (IsBigger == IsLower)
         {
@@ -279,8 +288,8 @@ int ProcessChars()
 
 int main()
 {
-    //ProcessPoints();
-    ProcessChars();
+    ProcessPoints();
+    //ProcessChars();
 
     system("pause");
     return 0;	
