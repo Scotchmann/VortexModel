@@ -66,7 +66,8 @@ void InitializeVortex(
 //--
 ForecastedValue pushAgent(double value, bool Up)
 {
-	ForecastedValue FCV;
+    //ForecastedValue FCV;
+    ForecastedValue FCV = {FCV.distance = 0, FCV.reliability = 0, FCV.value = 0};
 
     CheckIfForecastIsEmty:
 	
