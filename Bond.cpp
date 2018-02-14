@@ -9,32 +9,24 @@ Bond::Bond()
 
 Bond::Bond(Pole * source_Pole, Pole * target_Pole, double easing_Ratio, double strengthen_step )
 {
-    ptr_target_Pole = target_Pole;
-    d_easing_Ratio = easing_Ratio;
-    d_reliability = 1;
+    ptr_target_Pole   = target_Pole;
+    d_easing_Ratio    = easing_Ratio;
+    d_reliability     = 1;
     d_strengthen_Step = strengthen_step;
-    d_maxDouble = std::numeric_limits<double>::max();
+    d_maxDouble       = std::numeric_limits<double>::max();
 }
 
 Bond::~Bond()
 {
 }
 
-///--
-///--Укрепляет связь
-///--
+//  Укрепляет связь
 bool Bond::Strengthen(double Step)
 {
-    ///--
-    ///--Укрепляем пока значение меньше максимального размера типа
-    ///--
-
+    //  Укрепляем пока значение меньше максимального размера типа
     double _Step = d_strengthen_Step;
 
-    if (Step > 0)
-    {
-        _Step = Step;
-    }
+    if (Step > 0) _Step = Step;
 
     if(d_reliability < d_maxDouble)
     {
@@ -44,9 +36,7 @@ bool Bond::Strengthen(double Step)
     return false;
 }
 
-///--
-///--Ослабляет связь на коэффициент ослабления
-///--
+//  Ослабляет связь на коэффициент ослабления
 bool Bond::Ease()
 {
     d_reliability = d_reliability - d_strengthen_Step;
@@ -62,8 +52,3 @@ Pole * Bond::getTargetPole()
 {
     return ptr_target_Pole;
 }
-
-
-
-
-

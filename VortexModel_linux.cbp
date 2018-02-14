@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="VortexModel_linux"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/vortex/Dropbox/VortexModel_linux"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/vortex/Dropbox/VortexModel_linux"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VortexModel_linux">
+				<Option output="/home/vortex/Dropbox/VortexModel_linux/VortexModel_linux" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vortex/Dropbox/VortexModel_linux"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/c++/7.2.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/x86_64-linux-gnu/c++/7.2.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/c++/7.2.0/backward"/>
+					<Add directory="/usr/include/clang/4.0.1/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 VortexModel_linux"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VortexModel_linux/fast">
+				<Option output="/home/vortex/Dropbox/VortexModel_linux/VortexModel_linux" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vortex/Dropbox/VortexModel_linux"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/c++/7.2.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/x86_64-linux-gnu/c++/7.2.0"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/7.2.0/../../../../include/c++/7.2.0/backward"/>
+					<Add directory="/usr/include/clang/4.0.1/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 VortexModel_linux/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/vortex/Dropbox/VortexModel_linux"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/vortex/Dropbox/VortexModel_linux/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Agent.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Agent.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Bond.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Bond.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/DifferentialSet.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/InertialVector.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/InertialVector.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Pole.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Pole.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Vortex.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/Vortex.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/VortexModel.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/VortexModel.h">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/main.cpp">
+			<Option target="VortexModel_linux"/>
+		</Unit>
+		<Unit filename="/home/vortex/Dropbox/VortexModel_linux/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

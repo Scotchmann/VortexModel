@@ -13,79 +13,58 @@ class Bond;
 class Pole
 {
 
-public:
+//--------------------------------------------------------------------------------------------------
+public://  ПУБЛИЧНАЯ СЕКЦИЯ
+//--------------------------------------------------------------------------------------------------
 
-//_______________________________________________________________________________________________
+//__Конструкторы____________________________________________________________________________________
 
-    //--
-    //--Конструкторы
-    //--
-	
-    Pole	();
-    Pole	(double value, DifferentialSet differential);
+    Pole();
+    Pole(double value, DifferentialSet differential);
 
-//_______________________________________________________________________________________________
-    
-	//--
-    //--Деструкторы
-    //--
-	
-    ~Pole	();
+//__Деструкторы_____________________________________________________________________________________
 
-//_______________________________________________________________________________________________
-    
-	//--
-    //--Публичные поля
-    //--
-	
+    ~Pole();
+
+//__Публичные_поля__________________________________________________________________________________
+
     vector<Bond*> Connections;
-	queue<Bond*>    BondsQueue;
+	queue<Bond*>  BondsQueue;
 	double TotalRepeatsCounter;
 	int TotalConnectionCounter;
 
-//_______________________________________________________________________________________________
-	
-    //--
-    //--Публичные методы
-    //--
-	
-    bool            sortSourceConnections   ();
-    bool            easeAllBonds            ();
-    double          getValue                () const;
-    double          getCumulativeReliability() const;
-    void            setDifferential         (DifferentialSet differential);
-    DifferentialSet getDifferential         () const;
-    double          get_b_forecast          ();
-    double          get_c_forecast          ();
-	double          get_b          ();
-    double          get_c          ();
+//__Публичные_методы________________________________________________________________________________
+
+    bool sortSourceConnections();
+    bool easeAllBonds();
+    double getValue() const;
+    double getCumulativeReliability() const;
+    void setDifferential(DifferentialSet differential);
+    DifferentialSet getDifferential() const;
+    double get_b_forecast();
+    double get_c_forecast();
+	double get_b();
+    double get_c();
 
 
-private:
+//--------------------------------------------------------------------------------------------------
+private://  ПРИВАТНАЯ СЕКЦИЯ
+//--------------------------------------------------------------------------------------------------
 
-//_______________________________________________________________________________________________
+//__Приватные поля__________________________________________________________________________________
 
-    //--
-    //--Приватные поля
-    //--
-	
-    double  d_value;                        	// значение
+    double  d_value;                    // значение
     DifferentialSet d_differential; 	// дифференциал
-	
-//_______________________________________________________________________________________________
 
-	//--
-	//--Компаратор связей
-	//--
+	//  Компаратор связей
     struct BondComparator
     {
 		bool operator() (const Bond * left, const Bond * right)
         {
             return (left->getReliability() > right->getReliability());
         }
-
     } BondComparatorObject;
-	
+
 };
 
 #endif //VORTEXMODEL_LINUX_POLE_H

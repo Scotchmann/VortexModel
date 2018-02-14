@@ -5,26 +5,20 @@
 
 Pole::Pole()
 {
-	
+
 }
 
-//--
-//--Конструктор полюса
-//--
+//  Конструктор полюса
 Pole::Pole(double value, DifferentialSet differential)
 {
     d_value 		= value;
     d_differential = differential;
 }
 
-//--
-//--Деструктор полюса
-//--
+//  Деструктор полюса
 Pole::~Pole()
 {
-    //--
-    //--Удаляем все связи в удаляемом полюсе
-    //--
+    //  Удаляем все связи в удаляемом полюсе
 	mark_1:
 	for (auto it = Connections.begin(); it !=  Connections.end(); ++it)
 	{
@@ -34,32 +28,23 @@ Pole::~Pole()
 	}
 }
 
-//--
-//--Сортирует связи полюса
-//--
+//  Сортирует связи полюса
 bool Pole::sortSourceConnections()
 {
 	sort(Connections.begin(), Connections.end(), BondComparatorObject);
     return true;
 }
 
-//--
-//--Ослабляет все связи в полюсе
-//--
+//  Ослабляет все связи в полюсе
 bool Pole::easeAllBonds()
 {
-    //--
-    //--1. Собственно ослабляем все связи
-    //--
-	for (auto it = Connections.begin(); it != Connections.end(); ++it)
+    //  1. Собственно ослабляем все связи
+	for (auto it : Connections)
 	{
-		(*it)->Ease();
+		it->Ease();
 	}
 
-
-    //--
-    //--2. Удаляем отмершие связи у полюса
-    //--
+    //  2. Удаляем отмершие связи у полюса
 	mark_2:
 	for (auto it = Connections.begin(); it != Connections.end(); ++it)
 	{
@@ -82,22 +67,19 @@ double Pole::getValue() const
 double Pole::getCumulativeReliability() const
 {
     double cumulative_reliability = 0;	// куммулятивная надежность полюса
-    
-	//--
-	//--Собираем куммулятивную надежность
-	//--
 
-	for(auto it = Connections.begin(); it != Connections.end(); ++it)
+	//  Собираем куммулятивную надежность
+	for(const auto it : Connections)
 	{
-		cumulative_reliability = cumulative_reliability + (*it)->getReliability();
+		cumulative_reliability = cumulative_reliability + it->getReliability();
 	}
-	
+
     return cumulative_reliability;
 }
 
 void Pole::setDifferential(DifferentialSet differential)
 {
-   
+
 }
 
 DifferentialSet Pole::getDifferential() const
@@ -124,7 +106,3 @@ double Pole::get_c()
 {
     return d_differential.c;
 }
-
-
-
-

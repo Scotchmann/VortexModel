@@ -20,9 +20,7 @@ struct ForecastedValue
     double  distance;
 };
 
-///--
-///--Инициализирует вихрь
-///--
+//  Инициализирует вихрь
 void InitializeVortex(
 						int 	ArrSize 		= 0, 	// количество колец
 						double 	Step 			= 0, 	// шаг в процентах между полюсами
@@ -31,14 +29,10 @@ void InitializeVortex(
 						double 	strengthen_step	= 0		// шаг укрепления связи
                      );
 
-///--
-///--Заводит значение в вихрь
-///--
+//  Заводит значение в вихрь
 ForecastedValue pushAgent(double value, bool Up);
 
-///--
-///--Получает значение агента
-///--
+//  Получает значение агента
 double getAgent(int i, int j, bool Up);
 
 int GetDistance();
